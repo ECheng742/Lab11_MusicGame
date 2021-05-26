@@ -1,11 +1,12 @@
-/*	Author: lab
- *  Partner(s) Name: 
- *	Lab Section:
- *	Assignment: Lab #  Exercise #
- *	Exercise Description: [optional - include for your own benefit]
+/* Author: Ellie Cheng - echen111
+ * Lab Section: 022
+ * Assignment: Lab 11 
+ * Exercise Description: [optional - include for your own benefit]
+ * Music Game
+ * I acknowledge all content contained herein, excluding template or example
+ * code is my own original work.
  *
- *	I acknowledge all content contained herein, excluding template or example
- *	code, is my own original work.
+ *  Demo Link: Youtube URL> 
  */
 #include <avr/io.h>
 #ifdef _SIMULATE_
