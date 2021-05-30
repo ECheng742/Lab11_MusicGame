@@ -141,19 +141,15 @@ int ToneSMTick(int state) {
                 noteFrequency = 392.00;
             }
             else { 
-                noteFrequency = 261.63;
+                noteFrequency = 0;
             }
             break;
 
-        case TONE_wait:
-            noteFrequency = 329.63;
-            break;
-
         default:
-            noteFrequency = 392.00;
             break;
     }
     set_PWM(noteFrequency);
+    
     return state;
 }
 
