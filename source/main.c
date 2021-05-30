@@ -187,6 +187,7 @@ int main(void) {
     TimerOn();
 
     while(1){
+        set_PWM(392.00);
         for (i = 0; i < numTasks; i++){
             if (tasks[i]->elapsedTime == tasks[i]->period){
                 tasks[i]->state = tasks[i]->TickFct(tasks[i]->state);
@@ -194,7 +195,6 @@ int main(void) {
             }
             tasks[i]->elapsedTime += GCD;
         }
-        set_PWM(392);
         while(!TimerFlag);
         TimerFlag = 0;
 
