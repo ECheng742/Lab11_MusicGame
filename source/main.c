@@ -82,7 +82,6 @@ int main(void) {
         GCD = findGCD(GCD,tasks[i]->period);
     }
 
-    PWM_on();
     TimerSet(GCD);
     TimerOn();
 
