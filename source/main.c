@@ -124,6 +124,10 @@ int ToneSMTick(int state) {
     } 
 
     switch(state) {
+        case TONE_wait:
+            noteFrequency = 0;
+            break;
+    
         case TONE_note:
             if (button == 0x01) { // Note C - 261.63
                 noteFrequency = 261.63;
@@ -149,7 +153,7 @@ int ToneSMTick(int state) {
             break;
     }
     set_PWM(noteFrequency);
-    
+
     return state;
 }
 
