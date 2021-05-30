@@ -88,12 +88,11 @@ void PWM_off() {
 
 // TONE SM: When a button is pressed, a corresponding note is played
 // If multiple buttons pressed, nothing played
-enum TONE_States { TONE_SMStart, TONE_wait, TONE_note } TONE_State;
+enum TONE_States { TONE_SMStart, TONE_wait, TONE_note };
 
 double noteFrequency = 0x00;
 
 int ToneSMTick(int state) {
-    set_PWM(392.00);
     unsigned char button = ~PINB & 0x1F;
 
     switch(state) {
@@ -102,6 +101,7 @@ int ToneSMTick(int state) {
             break;
 
         case TONE_wait:
+        set_PWM(261.63);
             if (!button) {
                 state = TONE_wait;
             }
@@ -111,6 +111,7 @@ int ToneSMTick(int state) {
             break;
 
         case TONE_note:
+        set_PWM(293.66);
             if (!button) {
                 state = TONE_wait;
             }
@@ -151,6 +152,7 @@ int ToneSMTick(int state) {
             
         set_PWM(392.00);
     }
+
     return state;
 }
 
