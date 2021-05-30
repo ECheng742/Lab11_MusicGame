@@ -160,16 +160,16 @@ int main(void) {
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
 
-    static task task1, task2;
-    task *tasks[] = { &task1, &task2 };
+    static task task2;
+    task *tasks[] = { &task2 };
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
 
-    task1.state = start;
-    task1.period = 100;
-    task1.elapsedTime = task1.period;
-    task1.TickFct = &Demo_Tick;
+    // task1.state = start;
+    // task1.period = 100;
+    // task1.elapsedTime = task1.period;
+    // task1.TickFct = &Demo_Tick;
 
     task2.state = start;
     task2.period = 200;
