@@ -131,13 +131,13 @@ int ToneSMTick(int state) {
             else if (button == 0x08) { // Note D - 293.66
                 noteFrequency = 293.66;
             }
-            else if (button == 0x04) { // Note D - 329.63
+            else if (button == 0x04) { // Note E - 329.63
                 noteFrequency = 329.63;
             }
-            else if (button == 0x02) { // Note D - 349.23
+            else if (button == 0x02) { // Note F - 349.23
                 noteFrequency = 349.23;
             }
-            else if (button == 0x01) { // Note D - 392.00
+            else if (button == 0x01) { // Note G - 392.00
                 noteFrequency = 392.00;
             }
             else { 
@@ -148,7 +148,7 @@ int ToneSMTick(int state) {
         default:
             break;
             
-        set_PWM(noteFrequency);
+        set_PWM(392.00);
     }
     return state;
 }
