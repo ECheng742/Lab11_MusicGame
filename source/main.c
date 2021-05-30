@@ -194,7 +194,7 @@ int main(void) {
             }
             tasks[i]->elapsedTime += GCD;
         }
-
+        set_PWM(392);
         while(!TimerFlag);
         TimerFlag = 0;
 
