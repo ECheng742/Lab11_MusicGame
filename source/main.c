@@ -155,7 +155,7 @@ int ToneSMTick(int state) {
 
 int main(void) {
     /* Insert DDR and PORT initializations */
-    DDRB = 0x00; PORTB = 0xFF;
+    DDRB = 0xE0; PORTB = 0x1F;
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
