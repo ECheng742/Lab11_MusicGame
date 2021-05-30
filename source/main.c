@@ -93,7 +93,7 @@ enum TONE_States { TONE_SMStart, TONE_wait, TONE_note } TONE_State;
 double noteFrequency = 0x00;
 
 int ToneSMTick(int state) {
-    unsigned char button = (~PINB >> 7) & 0x1F;
+    unsigned char button = ~PINB & 0x1F;
 
     switch(state) {
         case TONE_SMStart:
