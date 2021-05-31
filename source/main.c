@@ -255,7 +255,7 @@ int LevelSMTick(int state) {
                     wonFlag = 0x01;
                 }
             }
-            PORTA = points;
+            PORTA = points << 2;
             break;
 
         case LEVEL_reset:
@@ -292,10 +292,10 @@ int main(void) {
     task2.elapsedTime = task2.period;
     task2.TickFct = &ToneSMTick;
 
-    // task3.state = start;
-    // task3.period = 100;
-    // task3.elapsedTime = task3.period;
-    // task3.TickFct = &ScoreSMTick;
+    task3.state = start;
+    task3.period = 100;
+    task3.elapsedTime = task3.period;
+    task3.TickFct = &LevelSMTick;
 
     unsigned short i;
     unsigned long GCD = tasks[0]->period;
