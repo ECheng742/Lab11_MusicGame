@@ -54,19 +54,19 @@ int Demo_Tick(int state) {
                 numRow = (int) (rand() % 5 + 1);
 				// row = (row << 1) | 0x01;
                 if (numRow == 1) {
-                    row = 0xFE;
+                    row = 0xEF;
                 }
                 else if (numRow == 2) {
-                    row = 0xFD;
+                    row = 0xF7;
                 }
                 else if (numRow == 3) {
                     row = 0xFB;
                 }
                 else if (numRow == 4) {
-                    row = 0xF7;
+                    row = 0xFD;
                 }
                 else if (numRow == 5) {
-                    row = 0xEF;
+                    row = 0xFE;
                 }
                 else { // Failsafe - select none of the rows
                     row = 0xFF;
