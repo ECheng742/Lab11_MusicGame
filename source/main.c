@@ -158,11 +158,7 @@ int ToneSMTick(int state) {
             break;
     } 
 
-    switch(state) {
-        case TONE_wait:
-            noteFrequency = 0;
-            break;
-    
+    switch(state) {    
         case TONE_note:
             if (!rowFlag) {
                 PORTA = 0x00;
@@ -193,6 +189,10 @@ int ToneSMTick(int state) {
             else {
                 noteFrequency = 0;
             }
+            break;
+
+        case TONE_waitRelease:
+            noteFrequency = 523.25;
             break;
 
         default:
