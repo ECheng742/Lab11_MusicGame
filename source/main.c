@@ -52,7 +52,6 @@ int Demo_Tick(int state) {
 				pattern = 0x80;
                 rowFlag = 0x00;		   
                 numRow = (int) (rand() % 5 + 1);
-				// row = (row << 1) | 0x01;
                 if (numRow == 1) {
                     row = 0xEF;
                 }
@@ -114,7 +113,7 @@ void PWM_off() {
 
 // TONE SM: When a button is pressed, a corresponding note is played
 // If multiple buttons pressed, nothing played
-enum TONE_States { TONE_SMStart, TONE_wait, TONE_note };
+enum TONE_States { TONE_SMStart, TONE_wait, TONE_note, TONE_waitRelease };
 
 int ToneSMTick(int state) {
     unsigned char button = ~PINB & 0x1F;
@@ -142,9 +141,17 @@ int ToneSMTick(int state) {
             }
             else { // button
                 buttonFlag = button;
-                state = TONE_note;
+                state = TONE_waitRelease;
             }
             break;
+
+        case TONE_waitRelease:
+            if (!button) {
+                state = TONE_wait;
+            }
+            else { // button
+                state = TONE_waitRelease;
+            }
 
         default:
             state = TONE_SMStart;
