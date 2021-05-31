@@ -18,10 +18,7 @@
 #include "../header/scheduler.h"
 #endif
 
-//--------------------------------------
-// LED Matrix Demo SynchSM
-// Period: 100 ms
-//--------------------------------------
+// LED Matrix SM: Displays running lights
 enum Demo_States {shift};
 int Demo_Tick(int state) {
 
@@ -30,6 +27,9 @@ int Demo_Tick(int state) {
 	static unsigned char row = 0xFE;  	// Row(s) displaying pattern. 
 							            // 0: display pattern on row
 							            // 1: do NOT display pattern on row
+    
+    unsigned char numRow = 0;
+
 	// Transitions
 	switch (state) {
 		case shift:	
@@ -46,7 +46,26 @@ int Demo_Tick(int state) {
 				row = 0xFE;
 			} else if (pattern == 0x01) { // Move LED to start of next row
 				pattern = 0x80;
-				row = (row << 1) | 0x01;
+                numRow = (int) (rand() % 5 + 1);
+				// row = (row << 1) | 0x01;
+                if (numRow == 1) {
+                    row = 0xFE;
+                }
+                else if (numRow == 2) {
+                    row = 0xFD;
+                }
+                else if (numRow == 3) {
+                    row = 0xFB;
+                }
+                else if (numRow == 4) {
+                    row = 0xF7;
+                }
+                else if (numRow == 5) {
+                    row = 0xEF;
+                }
+                else { // Failsafe - select none of the rows
+                    row = 0xFF;
+                }
 			} else { // Shift LED one spot to the right on current row
 				pattern >>= 1;
 			}
@@ -90,10 +109,10 @@ void PWM_off() {
 // If multiple buttons pressed, nothing played
 enum TONE_States { TONE_SMStart, TONE_wait, TONE_note };
 
-double noteFrequency = 0x00;
 
 int ToneSMTick(int state) {
     unsigned char button = ~PINB & 0x1F;
+    static double noteFrequency = 0x00;
 
     switch(state) {
         case TONE_SMStart:
