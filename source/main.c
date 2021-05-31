@@ -124,7 +124,7 @@ int ToneSMTick(int state) {
             state = TONE_wait;
             break;
         case TONE_wait:
-            buttonFlag = 0x00;
+            // buttonFlag = 0x00;
             if (!button) {
                 state = TONE_wait;
             }
@@ -148,7 +148,7 @@ int ToneSMTick(int state) {
                     state = TONE_waitRelease;
                 }
                 // buttonFlag = button;
-                state = TONE_note;
+                // state = TONE_note;
             }
             break;
         case TONE_note:
