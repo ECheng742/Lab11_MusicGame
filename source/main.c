@@ -168,8 +168,9 @@ int ToneSMTick(int state) {
                 state = TONE_waitRelease;
             }
             else { // !button
-                state = TONE_waitRelease;
+                state = TONE_wait;
             }
+            break;
         default:
             state = TONE_SMStart;
             break;
