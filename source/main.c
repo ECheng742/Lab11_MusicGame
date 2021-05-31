@@ -181,7 +181,7 @@ int ToneSMTick(int state) {
             }
             else { // button
                 if (rowFlag) {
-                    scoreFlag 0x02;
+                    scoreFlag = 0x02;
                 }
                 state = TONE_waitRelease;
             }
@@ -264,7 +264,8 @@ int LevelSMTick(int state) {
             lostFlag = 0x01;
             break;
     }
-    
+
+    return state;    
 }
 
 int main(void) {
