@@ -125,6 +125,7 @@ int ToneSMTick(int state) {
             state = TONE_wait;
             break;
         case TONE_wait:
+            PORTA = 0x04; // FIXME
             if (!button) {
                 state = TONE_wait;
             }
@@ -156,6 +157,7 @@ int ToneSMTick(int state) {
             }
             break;
         case TONE_note:
+            PORTA = 0x0C; // FIXME
             if (hold <= 1) {
                 state = TONE_note;
             }
@@ -170,6 +172,7 @@ int ToneSMTick(int state) {
             hold = (hold + 1) % 3;
             break;
         case TONE_waitRelease:
+            PORTA = 0x08; // FIXME
             if (!button) {
                 state = TONE_wait;
             }
