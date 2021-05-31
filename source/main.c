@@ -272,7 +272,7 @@ int main(void) {
     task2.TickFct = &ToneSMTick;
 
     task3.state = start;
-    task3.period = 200;
+    task3.period = 100;
     task3.elapsedTime = task3.period;
     task3.TickFct = &ScoreSMTick;
 
