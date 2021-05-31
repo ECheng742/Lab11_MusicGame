@@ -205,6 +205,7 @@ int ToneSMTick(int state) {
             break;
 
         case TONE_wait:
+            noteFrequency = 0;
             break;
 
         default:
