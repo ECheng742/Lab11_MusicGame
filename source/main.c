@@ -67,8 +67,8 @@ int Demo_Tick(int state) {
                     row = 0xFF;
                 }
 			} else { // Shift LED one spot to the right on current row
-                if (pattern == 0x01) {rowFlag = 0x00;}
-                else {rowFlag = numRow;}
+                if (pattern == 0x01) {rowFlag = numRow;}
+                else {rowFlag = 0x00;}
 				pattern >>= 1;
 			}
 			break;
