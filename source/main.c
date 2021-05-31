@@ -216,11 +216,11 @@ int ToneSMTick(int state) {
     return state;
 }
 
-enum LEVEL_States {  };
+// enum LEVEL_States {  };
 
-int LevelSMTick(int state) {
+// int LevelSMTick(int state) {
 
-}
+// }
 
 int main(void) {
     /* Insert DDR and PORT initializations */
