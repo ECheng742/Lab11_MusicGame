@@ -35,7 +35,7 @@ int Demo_Tick(int state) {
 
 	// Transitions
 	switch (state) {
-        case SMSmart:
+        case SMStart:
             state = shift;
             break;
 		case shift:	
