@@ -164,11 +164,11 @@ int ToneSMTick(int state) {
             break;
         case TONE_waitRelease:
             PORTA = 0x08;
-            if (button) {
-                state = TONE_waitRelease;
-            }
-            else { // !button
+            if (!button) {
                 state = TONE_wait;
+            }
+            else { // button
+                state = TONE_waitRelease;
             }
             break;
         default:
@@ -204,16 +204,9 @@ int ToneSMTick(int state) {
             }
             break;
 
-        case TONE_waitRelease:
-            noteFrequency = 523.25;
-            break;
-
-        case TONE_wait:
+        default:
             noteFrequency = 0;
             break;
-
-        // default:
-            // break;
     }
     set_PWM(noteFrequency);
 
