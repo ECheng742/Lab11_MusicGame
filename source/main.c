@@ -118,6 +118,7 @@ enum TONE_States { TONE_SMStart, TONE_wait, TONE_note, TONE_waitRelease };
 int ToneSMTick(int state) {
     unsigned char button = ~PINB & 0x1F;
     static double noteFrequency = 0x00;
+    static char hold = 0x00;
 
     switch(state) {
         case TONE_SMStart:
@@ -154,13 +155,17 @@ int ToneSMTick(int state) {
             break;
         case TONE_note:
             PORTA = 0x0C;
-            if (!button) {
+            if (hold) {
+                state = TONE_note;
+            }
+            else if (!button && !hold) {
                 state = TONE_wait;
             }
-            else { // button
+            else { // button && !hold
                 // buttonFlag = button;
                 state = TONE_waitRelease;
             }
+            hold = !hold;
             break;
         case TONE_waitRelease:
             PORTA = 0x08;
