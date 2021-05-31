@@ -276,8 +276,8 @@ int main(void) {
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
 
-    static task task1, task2;
-    task *tasks[] = { &task1, &task2 };
+    static task task1, task2, task3;
+    task *tasks[] = { &task1, &task2, &task3 };
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
