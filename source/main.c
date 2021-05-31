@@ -124,6 +124,7 @@ int ToneSMTick(int state) {
             state = TONE_wait;
             break;
         case TONE_wait:
+            PORTA = 0x04;
             // buttonFlag = 0x00;
             if (!button) {
                 state = TONE_wait;
@@ -152,6 +153,7 @@ int ToneSMTick(int state) {
             }
             break;
         case TONE_note:
+            PORTA = 0x0C;
             if (!button) {
                 state = TONE_wait;
             }
@@ -161,12 +163,11 @@ int ToneSMTick(int state) {
             }
             break;
         case TONE_waitRelease:
+            PORTA = 0x08;
             if (button == 0x00) {
-                PORTA = 0x00;
                 state = TONE_wait;
             }
             else { // button
-                PORTA = 0x04;
                 state = TONE_waitRelease;
             }
         default:
@@ -289,7 +290,7 @@ int ToneSMTick(int state) {
 
 int main(void) {
     /* Insert DDR and PORT initializations */
-    DDRA = 0x04; PORTA = 0xFB;
+    DDRA = 0x0C; PORTA = 0xF3;
     DDRB = 0xE0; PORTB = 0x1F;
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
