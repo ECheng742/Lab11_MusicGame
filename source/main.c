@@ -128,8 +128,8 @@ int ToneSMTick(int state) {
             break;
         case TONE_wait:
             // PORTA = 0x04; // FIXME
-            scoreFlag = 0x00;
             if (!button) {
+                scoreFlag = 0x00;
                 state = TONE_wait;
             }
             else { // button
@@ -227,9 +227,9 @@ int ToneSMTick(int state) {
 }
 
 enum LEVEL_States { LEVEL_SMStart, LEVEL_compare, LEVEL_reset };
-
+unsigned points = 0x00;
 int LevelSMTick(int state) {
-    static unsigned points = 0x00;
+    // static unsigned points = 0x00;
     static unsigned deductions = 0x00;
 
     switch(state) {
