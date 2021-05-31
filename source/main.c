@@ -233,10 +233,12 @@ int LevelSMTick(int state) {
 
     switch(state) {
         case LEVEL_SMStart:
+            PORTA = 0x04;
             state = LEVEL_compare;
             break;
 
         case LEVEL_compare:
+            PORTA = 0x08;
             if (scoreFlag == 0x01) {
                 points++;
                 state = LEVEL_compare;
@@ -255,7 +257,7 @@ int LevelSMTick(int state) {
                     wonFlag = 0x01;
                 }
             }
-            PORTA = points << 2;
+            // PORTA = points << 2; // FIXME
             break;
 
         case LEVEL_reset:
