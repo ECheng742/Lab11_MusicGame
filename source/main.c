@@ -164,11 +164,11 @@ int ToneSMTick(int state) {
             break;
         case TONE_waitRelease:
             PORTA = 0x08;
-            if (button == 0x00) {
-                state = TONE_wait;
-            }
-            else { // button
+            if (button) {
                 state = TONE_waitRelease;
+            }
+            else { // !button
+                state = TONE_wait;
             }
         default:
             state = TONE_SMStart;
