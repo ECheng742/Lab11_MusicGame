@@ -22,7 +22,7 @@ unsigned char buttonFlag = 0x00;
 unsigned char rowFlag = 0;
 
 // LED Matrix SM: Displays running lights
-enum Demo_States {shift};
+enum Demo_States {SMStart, shift};
 int Demo_Tick(int state) {
 
 	// Local Variables
@@ -35,10 +35,14 @@ int Demo_Tick(int state) {
 
 	// Transitions
 	switch (state) {
+        case SMSmart:
+            state = shift;
+            break;
 		case shift:	
+            state = shift;
             break;
 		default:	
-            state = shift;
+            state = SMStart;
 			break;
 	}	
 	// Actions
