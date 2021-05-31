@@ -18,17 +18,18 @@
 #include "../header/scheduler.h"
 #endif
 
+unsigned char buttonFlag = 0x00;
+unsigned char rowFlag = 0xFF;
+
 // LED Matrix SM: Displays running lights
 enum Demo_States {shift};
 int Demo_Tick(int state) {
 
 	// Local Variables
 	static unsigned char pattern = 0x80;	// LED pattern - 0: LED off; 1: LED on
-	static unsigned char row = 0xFE;  	// Row(s) displaying pattern. 
+	static unsigned char row = 0xFE;  	// (s) displaying pattern. 
 							            // 0: display pattern on row
 							            // 1: do NOT display pattern on row
-    
-    unsigned char numRow = 0;
 
 	// Transitions
 	switch (state) {
@@ -46,21 +47,21 @@ int Demo_Tick(int state) {
 				row = 0xFE;
 			} else if (pattern == 0x01) { // Move LED to start of next row
 				pattern = 0x80;
-                numRow = (int) (rand() % 5 + 1);
+                rowFlag = (int) (rand() % 5 + 1);
 				// row = (row << 1) | 0x01;
-                if (numRow == 1) {
+                if (rowFlag == 1) {
                     row = 0xFE;
                 }
-                else if (numRow == 2) {
+                else if (rowFlag == 2) {
                     row = 0xFD;
                 }
-                else if (numRow == 3) {
+                else if (rowFlag == 3) {
                     row = 0xFB;
                 }
-                else if (numRow == 4) {
+                else if (rowFlag == 4) {
                     row = 0xF7;
                 }
-                else if (numRow == 5) {
+                else if (rowFlag == 5) {
                     row = 0xEF;
                 }
                 else { // Failsafe - select none of the rows
@@ -109,7 +110,6 @@ void PWM_off() {
 // If multiple buttons pressed, nothing played
 enum TONE_States { TONE_SMStart, TONE_wait, TONE_note };
 
-
 int ToneSMTick(int state) {
     unsigned char button = ~PINB & 0x1F;
     static double noteFrequency = 0x00;
@@ -124,6 +124,7 @@ int ToneSMTick(int state) {
                 state = TONE_wait;
             }
             else { // button
+                buttonFlag = button;
                 state = TONE_note;
             }
             break;
@@ -133,6 +134,7 @@ int ToneSMTick(int state) {
                 state = TONE_wait;
             }
             else { // button
+                buttonFlag = button;
                 state = TONE_note;
             }
             break;
@@ -176,6 +178,63 @@ int ToneSMTick(int state) {
     return state;
 }
 
+enum SCORE_States { SCORE_SMStart, SCORE_wait, SCORE_compare, SCORE_waitRelease };
+
+int ScoreSMTick(int state) {
+
+    static unsigned char score = 0;
+
+    switch(state) {
+        case SCORE_SMStart:
+            state = SCORE_wait;
+            break;
+
+        case SCORE_wait:
+            if (!button) {
+                state = SCORE_wait;
+            }
+            else { // button
+                state = SCORE_compare;
+            }
+            break;
+
+        case SCORE_compare:
+            if (!button) {
+                state = SCORE_wait;
+            }
+            else { // button
+                state = SCORE_waitRelease;
+            }
+            break;
+
+        case SCORE_waitRelease:
+            if (!button) {
+                state = SCORE_wait;
+            }
+            else { // button
+                state = SCORE_waitRelease;
+            }
+            break;
+
+        default:
+            state = SCORE_SMStart;
+            break;
+    } 
+
+    switch(state) {    
+        case TONE_note:
+            if (buttonFlag == rowFlag) { 
+                score++;
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    return state;
+}
+
 int main(void) {
     /* Insert DDR and PORT initializations */
     DDRB = 0xE0; PORTB = 0x1F;
@@ -183,23 +242,26 @@ int main(void) {
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
 
-    // static task task1, task2;
-    // task *tasks[] = { &task1, &task2 };
-    static task task1;
-    task *tasks[] = { &task1 };
+    static task task1, task2, task3;
+    task *tasks[] = { &task1, &task2, &task3 };
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
 
     task1.state = start;
-    task1.period = 100;
+    task1.period = 150;
     task1.elapsedTime = task1.period;
     task1.TickFct = &Demo_Tick;
 
-    // task2.state = start;
-    // task2.period = 50;
-    // task2.elapsedTime = task2.period;
-    // task2.TickFct = &ToneSMTick;
+    task2.state = start;
+    task2.period = 100;
+    task2.elapsedTime = task2.period;
+    task2.TickFct = &ToneSMTick;
+
+    task3.state = start;
+    task3.period = 50;
+    task3.elapsedTime = task3.period;
+    task3.TickFct = &ScoreSMTick;
 
     unsigned short i;
     unsigned long GCD = tasks[0]->period;
@@ -207,7 +269,7 @@ int main(void) {
         GCD = findGCD(GCD,tasks[i]->period);
     }
 
-    // PWM_on();
+    PWM_on();
     TimerSet(GCD);
     TimerOn();
 
