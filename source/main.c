@@ -120,6 +120,7 @@ int ToneSMTick(int state) {
             break;
 
         case TONE_wait:
+            buttonFlag = 0x00;
             if (!button) {
                 state = TONE_wait;
             }
@@ -228,7 +229,7 @@ int ScoreSMTick(int state) {
         case SCORE_compare:
             if (buttonFlag == rowFlag) { 
                 score++;
-                PWM_on();
+                // PWM_on();
                 PORTA = PORTA & 0xFF;
             }
             else {
