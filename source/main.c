@@ -20,6 +20,8 @@
 
 unsigned char scoreFlag = 0x00;
 unsigned char rowFlag = 0x00;
+unsigned char lostFlag = 0x00;
+unsigned char wonFlag = 0x00;
 
 // LED Matrix SM: Displays running lights
 enum Demo_States {SMStart, shift};
@@ -118,14 +120,14 @@ enum TONE_States { TONE_SMStart, TONE_wait, TONE_note, TONE_waitRelease };
 int ToneSMTick(int state) {
     unsigned char button = ~PINB & 0x1F;
     static double noteFrequency = 0x00;
-    static char hold = 0x00;
+    static char hold = 0x00; // Allows player extra period of time to let go w/o loss of points
 
     switch(state) {
         case TONE_SMStart:
             state = TONE_wait;
             break;
         case TONE_wait:
-            PORTA = 0x04; // FIXME
+            // PORTA = 0x04; // FIXME
             if (!button) {
                 state = TONE_wait;
             }
@@ -157,8 +159,9 @@ int ToneSMTick(int state) {
             }
             break;
         case TONE_note:
-            PORTA = 0x0C; // FIXME
+            // PORTA = 0x0C; // FIXME
             if (hold <= 1) {
+                scoreFlag = 0x00;
                 state = TONE_note;
             }
             else if (!button && hold > 1) {
@@ -172,11 +175,14 @@ int ToneSMTick(int state) {
             hold = (hold + 1) % 3;
             break;
         case TONE_waitRelease:
-            PORTA = 0x08; // FIXME
+            // PORTA = 0x08; // FIXME
             if (!button) {
                 state = TONE_wait;
             }
             else { // button
+                if (rowFlag) {
+                    scoreFlag 0x02;
+                }
                 state = TONE_waitRelease;
             }
             break;
@@ -219,11 +225,47 @@ int ToneSMTick(int state) {
     return state;
 }
 
-// enum LEVEL_States {  };
+enum LEVEL_States { LEVEL_SMStart, LEVEL_compare, LEVEL_reset };
 
-// int LevelSMTick(int state) {
+int LevelSMTick(int state) {
+    static unsigned points = 0x00;
+    static unsigned deductions = 0x00;
 
-// }
+    switch(state) {
+        case LEVEL_SMStart:
+            state = LEVEL_compare;
+            break;
+
+        case LEVEL_compare:
+            if (scoreFlag == 0x01) {
+                points++;
+                state = LEVEL_compare;
+            }
+            else if (scoreFlag == 0x02) {
+                deductions++;
+                state = LEVEL_compare;
+            }
+            if (deductions >= 3) {
+                lostFlag = 0x01;
+                state = LEVEL_reset;
+            }
+            else { // deductions < 3
+                if (points == 0x05) {
+                    points = 0x00;
+                    wonFlag = 0x01;
+                }
+            }
+            PORTA = points;
+            break;
+
+        case LEVEL_reset:
+            points = 0x00;
+            deductions = 0x00;
+            lostFlag = 0x01;
+            break;
+    }
+    
+}
 
 int main(void) {
     /* Insert DDR and PORT initializations */
