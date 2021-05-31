@@ -223,6 +223,7 @@ int ScoreSMTick(int state) {
 
     switch(state) {    
         case SCORE_compare:
+            set_PWM(392.00);
             if (buttonFlag == rowFlag) { 
                 score++;
                 PWM_on();
@@ -235,6 +236,7 @@ int ScoreSMTick(int state) {
             break;
 
         default:
+            set_PWM(329.63);
             PWM_off();
             PORTA = PORTA & 0xFB;
             break;
