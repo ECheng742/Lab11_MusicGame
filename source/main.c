@@ -230,14 +230,14 @@ int ScoreSMTick(int state) {
                 PORTA = PORTA & 0xFF;
             }
             else {
-                PWM_off();
+                // PWM_off();
                 PORTA = PORTA & 0xFB;
             }
             break;
 
         default:
             set_PWM(329.63);
-            PWM_off();
+            // PWM_off();
             PORTA = PORTA & 0xFB;
             break;
     }
