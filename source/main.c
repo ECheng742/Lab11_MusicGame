@@ -77,6 +77,12 @@ int Demo_Tick(int state) {
 	}
 	PORTC = pattern;	// Pattern to display
 	PORTD = row;		// Row(s) displaying pattern	
+    if (!rowFlag) {
+                PORTA = 0x00;
+            }
+            else {
+                PORTA = 0x04;
+            }
 	return state;
 }
 
