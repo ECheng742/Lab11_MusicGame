@@ -225,10 +225,15 @@ int ScoreSMTick(int state) {
         case SCORE_compare:
             if (buttonFlag == rowFlag) { 
                 score++;
+                PWM_on();
+            }
+            else {
+                PWM_off();
             }
             break;
 
         default:
+            PWM_off();
             break;
     }
 
