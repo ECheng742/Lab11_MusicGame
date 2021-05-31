@@ -178,9 +178,11 @@ int ToneSMTick(int state) {
         case TONE_waitRelease:
             // PORTA = 0x08; // FIXME
             if (!button) {
+                scoreFlag = 0x00;
                 state = TONE_wait;
             }
             else { // button
+                scoreFlag = 0x00;
                 if (rowFlag) {
                     scoreFlag = 0x02;
                 }
