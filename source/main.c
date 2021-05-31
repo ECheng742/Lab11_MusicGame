@@ -152,7 +152,7 @@ int ToneSMTick(int state) {
             break;
     
         case TONE_note:
-            PORTA = 0x04;
+            PORTA = rowFlag;
             if (rowFlag && (rowFlag == button)) {
                 
                 if (button == 0x01) { // Note C - 261.63
