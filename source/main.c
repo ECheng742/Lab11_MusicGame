@@ -256,7 +256,6 @@ int LevelSMTick(int state) {
                     wonFlag = 0x01;
                 }
             }
-            PORTA = points << 2; // FIXME
             break;
 
         case LEVEL_reset:
@@ -271,6 +270,7 @@ int LevelSMTick(int state) {
             break;
     }
 
+            PORTA = point << 2; // FIXME
     return state;    
 }
 
