@@ -123,28 +123,43 @@ int ToneSMTick(int state) {
         case TONE_SMStart:
             state = TONE_wait;
             break;
-
         case TONE_wait:
             buttonFlag = 0x00;
             if (!button) {
                 state = TONE_wait;
             }
             else { // button
-                buttonFlag = button;
+                if (button == 0x01 && (rowFlag == 0x01)) { // Note C - 261.63
+                    state = TONE_note;
+                }
+                else if (button == 0x02 && (rowFlag == 0x02)) { // Note D - 293.66
+                    state = TONE_note;
+                }
+                else if (button == 0x04 && (rowFlag == 0x03)) { // Note E - 329.63
+                    state = TONE_note;
+                }
+                else if (button == 0x08 && (rowFlag == 0x04)) { // Note F - 349.23
+                    state = TONE_note;
+                }
+                else if (button == 0x10 && (rowFlag == 0x05)) { // Note G - 392.00
+                    state = TONE_note;
+                }
+                else { // Multiple buttons or Doesn't match row
+                    state = TONE_waitRelease;
+                }
+                // buttonFlag = button;
                 state = TONE_note;
             }
             break;
-
         case TONE_note:
             if (!button) {
                 state = TONE_wait;
             }
             else { // button
-                buttonFlag = button;
+                // buttonFlag = button;
                 state = TONE_waitRelease;
             }
             break;
-
         case TONE_waitRelease:
             if (!button) {
                 state = TONE_wait;
@@ -152,7 +167,6 @@ int ToneSMTick(int state) {
             else { // button
                 state = TONE_waitRelease;
             }
-
         default:
             state = TONE_SMStart;
             break;
@@ -166,27 +180,22 @@ int ToneSMTick(int state) {
             else {
                 PORTA = 0x04;
             }
-            if (rowFlag) {
-                if (button == 0x01 && (rowFlag == 0x01)) { // Note C - 261.63
-                    noteFrequency = 261.63;
-                }
-                else if (button == 0x02 && (rowFlag == 0x02)) { // Note D - 293.66
-                    noteFrequency = 293.66;
-                }
-                else if (button == 0x04 && (rowFlag == 0x03)) { // Note E - 329.63
-                    noteFrequency = 329.63;
-                }
-                else if (button == 0x08 && (rowFlag == 0x04)) { // Note F - 349.23
-                    noteFrequency = 349.23;
-                }
-                else if (button == 0x10 && (rowFlag == 0x05)) { // Note G - 392.00
-                    noteFrequency = 392.00;
-                }
-                else { 
-                    noteFrequency = 0;
-                }
+            if (button == 0x01) { // Note C - 261.63
+                noteFrequency = 261.63;
             }
-            else {
+            else if (button == 0x02) { // Note D - 293.66
+                noteFrequency = 293.66;
+            }
+            else if (button == 0x04) { // Note E - 329.63
+                noteFrequency = 329.63;
+            }
+            else if (button == 0x08) { // Note F - 349.23
+                noteFrequency = 349.23;
+            }
+            else if (button == 0x10) { // Note G - 392.00
+                noteFrequency = 392.00;
+            }
+            else { 
                 noteFrequency = 0;
             }
             break;
