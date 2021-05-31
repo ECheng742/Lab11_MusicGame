@@ -130,6 +130,9 @@ int ToneSMTick(int state) {
             // PORTA = 0x04; // FIXME
             if (!button) {
                 scoreFlag = 0x00;
+                if (rowFlag) {
+                    scoreFlag = 0x02;
+                }
                 state = TONE_wait;
             }
             else { // button
