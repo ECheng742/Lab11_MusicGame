@@ -77,13 +77,6 @@ int Demo_Tick(int state) {
 	}
 	PORTC = pattern;	// Pattern to display
 	PORTD = row;		// Row(s) displaying pattern	
-    
-            if (!rowFlag) {
-                PORTA = 0x00;
-            }
-            else {
-                PORTA = 0x04;
-            }
 	return state;
 }
 
@@ -159,6 +152,12 @@ int ToneSMTick(int state) {
             break;
     
         case TONE_note:
+            if (!rowFlag) {
+                PORTA = 0x00;
+            }
+            else {
+                PORTA = 0x04;
+            }
             if (rowFlag && (rowFlag == button)) {
                 
                 if (button == 0x01) { // Note C - 261.63
@@ -278,7 +277,7 @@ int main(void) {
     const char start = -1;
 
     task1.state = start;
-    task1.period = 300;
+    task1.period = 500;
     task1.elapsedTime = task1.period;
     task1.TickFct = &Demo_Tick;
 
