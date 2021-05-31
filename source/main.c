@@ -226,14 +226,17 @@ int ScoreSMTick(int state) {
             if (buttonFlag == rowFlag) { 
                 score++;
                 PWM_on();
+                PORTA = PORTA & 0xFF;
             }
             else {
                 PWM_off();
+                PORTA = PORTA & 0xFB;
             }
             break;
 
         default:
             PWM_off();
+            PORTA = PORTA & 0xFB;
             break;
     }
 
@@ -242,6 +245,7 @@ int ScoreSMTick(int state) {
 
 int main(void) {
     /* Insert DDR and PORT initializations */
+    DDRA = 0x04; PORTA = 0xFB;
     DDRB = 0xE0; PORTB = 0x1F;
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
