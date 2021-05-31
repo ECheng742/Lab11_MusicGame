@@ -211,7 +211,7 @@ int ScoreSMTick(int state) {
                 state = SCORE_wait;
             }
             else { // buttonFlag
-                state = SCORE_waitRelease;
+                // state = SCORE_waitRelease;
             }
             break;
 
