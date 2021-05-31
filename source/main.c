@@ -302,7 +302,7 @@ int main(void) {
     const char start = -1;
 
     task1.state = start;
-    task1.period = 500;
+    task1.period = 300;
     task1.elapsedTime = task1.period;
     task1.TickFct = &Demo_Tick;
 
