@@ -265,6 +265,10 @@ int LevelSMTick(int state) {
             deductions = 0x00;
             lostFlag = 0x01;
             break;
+
+        default:
+            state = LEVEL_SMStart;
+            break;
     }
 
     return state;    
