@@ -191,7 +191,6 @@ int ScoreSMTick(int state) {
             break;
 
         case SCORE_wait:
-            set_PWM(329.63);
             if (!buttonFlag) {
                 state = SCORE_wait;
             }
@@ -201,7 +200,6 @@ int ScoreSMTick(int state) {
             break;
 
         case SCORE_compare:
-            set_PWM(392.00);
             if (!buttonFlag) {
                 state = SCORE_wait;
             }
@@ -228,17 +226,20 @@ int ScoreSMTick(int state) {
     switch(state) {    
         case SCORE_compare:
             if (buttonFlag == rowFlag) { 
+            set_PWM(261.63); 
                 score++;
                 // PWM_on();
                 PORTA = PORTA & 0xFF;
             }
             else {
+            set_PWM(392.00);                
                 // PWM_off();
                 PORTA = PORTA & 0xFB;
             }
             break;
 
         default:
+            set_PWM(329.63);
             // PWM_off();
             PORTA = PORTA & 0xFB;
             break;
