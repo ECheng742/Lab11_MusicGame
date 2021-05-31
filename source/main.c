@@ -153,6 +153,8 @@ int ToneSMTick(int state) {
     
         case TONE_note:
             if (rowFlag && (rowFlag == button)) {
+                
+            PORTA = 0x04;
                 if (button == 0x01) { // Note C - 261.63
                     noteFrequency = 261.63;
                 }
@@ -236,19 +238,19 @@ int ScoreSMTick(int state) {
             set_PWM(261.63); 
                 score++;
                 // PWM_on();
-                PORTA = PORTA & 0xFF;
+                PORTA = 0x00;
             }
             else {
             set_PWM(392.00);                
                 // PWM_off();
-                PORTA = PORTA & 0xFB;
+                PORTA = 0x04;
             }
             break;
 
         default:
             set_PWM(329.63);
             // PWM_off();
-            PORTA = PORTA & 0xFB;
+            PORTA = 0x00;
             break;
     }
 
@@ -295,7 +297,6 @@ int main(void) {
     TimerOn();
 
     while(1){
-        PORTA = 0x04;
         for (i = 0; i < numTasks; i++){
             if (tasks[i]->elapsedTime == tasks[i]->period){
                 tasks[i]->state = tasks[i]->TickFct(tasks[i]->state);
