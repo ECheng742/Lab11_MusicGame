@@ -162,9 +162,11 @@ int ToneSMTick(int state) {
             break;
         case TONE_waitRelease:
             if (button == 0x00) {
+                PORTA = 0x00;
                 state = TONE_wait;
             }
             else { // button
+                PORTA = 0x04;
                 state = TONE_waitRelease;
             }
         default:
@@ -174,12 +176,12 @@ int ToneSMTick(int state) {
 
     switch(state) {    
         case TONE_note:
-            if (!rowFlag) {
-                PORTA = 0x00;
-            }
-            else {
-                PORTA = 0x04;
-            }
+            // if (!rowFlag) {
+            //     PORTA = 0x00;
+            // }
+            // else {
+            //     PORTA = 0x04;
+            // }
             if (button == 0x01) { // Note C - 261.63
                 noteFrequency = 261.63;
             }
@@ -216,74 +218,74 @@ int ToneSMTick(int state) {
     return state;
 }
 
-enum SCORE_States { SCORE_SMStart, SCORE_wait, SCORE_compare, SCORE_waitRelease };
+// enum SCORE_States { SCORE_SMStart, SCORE_wait, SCORE_compare, SCORE_waitRelease };
 
-int ScoreSMTick(int state) {
+// int ScoreSMTick(int state) {
 
-    static unsigned char score = 0;
+//     static unsigned char score = 0;
 
-    switch(state) {
-        case SCORE_SMStart:
-            state = SCORE_wait;
-            break;
+//     switch(state) {
+//         case SCORE_SMStart:
+//             state = SCORE_wait;
+//             break;
 
-        case SCORE_wait:
-            if (!buttonFlag) {
-                state = SCORE_wait;
-            }
-            else { // buttonFlag
-                state = SCORE_compare;
-            }
-            break;
+//         case SCORE_wait:
+//             if (!buttonFlag) {
+//                 state = SCORE_wait;
+//             }
+//             else { // buttonFlag
+//                 state = SCORE_compare;
+//             }
+//             break;
 
-        case SCORE_compare:
-            if (!buttonFlag) {
-                state = SCORE_wait;
-            }
-            else { // buttonFlag
-                // state = SCORE_waitRelease;
-            }
-            break;
+//         case SCORE_compare:
+//             if (!buttonFlag) {
+//                 state = SCORE_wait;
+//             }
+//             else { // buttonFlag
+//                 // state = SCORE_waitRelease;
+//             }
+//             break;
 
-        case SCORE_waitRelease:
-            // set_PWM(392.00);
-            if (!buttonFlag) {
-                state = SCORE_wait;
-            }
-            else { // buttonFlag
-                state = SCORE_waitRelease;
-            }
-            break;
+//         case SCORE_waitRelease:
+//             // set_PWM(392.00);
+//             if (!buttonFlag) {
+//                 state = SCORE_wait;
+//             }
+//             else { // buttonFlag
+//                 state = SCORE_waitRelease;
+//             }
+//             break;
 
-        default:
-            state = SCORE_SMStart;
-            break;
-    } 
+//         default:
+//             state = SCORE_SMStart;
+//             break;
+//     } 
 
-    switch(state) {    
-        case SCORE_compare:
-            if (buttonFlag == rowFlag) { 
-            set_PWM(261.63); 
-                score++;
-                // PWM_on();
-                PORTA = 0x00;
-            }
-            else {
-            set_PWM(392.00);                
-                // PWM_off();
-                PORTA = 0x04;
-            }
-            break;
+//     switch(state) {    
+//         case SCORE_compare:
+//             if (buttonFlag == rowFlag) { 
+//             set_PWM(261.63); 
+//                 score++;
+//                 // PWM_on();
+//                 PORTA = 0x00;
+//             }
+//             else {
+//             set_PWM(392.00);                
+//                 // PWM_off();
+//                 PORTA = 0x04;
+//             }
+//             break;
 
-        default:
-            set_PWM(329.63);
-            // PWM_off();
-            PORTA = 0x00;
-            break;
-    }
+//         default:
+//             set_PWM(329.63);
+//             // PWM_off();
+//             PORTA = 0x00;
+//             break;
+//     }
 
-    return state;
-}
+//     return state;
+// }
 
 int main(void) {
     /* Insert DDR and PORT initializations */
