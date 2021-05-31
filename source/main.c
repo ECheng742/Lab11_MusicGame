@@ -18,8 +18,8 @@
 #include "../header/scheduler.h"
 #endif
 
-unsigned char buttonFlag = 0x00;
-unsigned char rowFlag = 0;
+unsigned char scoreFlag = 0x00;
+unsigned char rowFlag = 0x00;
 
 // LED Matrix SM: Displays running lights
 enum Demo_States {SMStart, shift};
@@ -125,50 +125,51 @@ int ToneSMTick(int state) {
             state = TONE_wait;
             break;
         case TONE_wait:
-            PORTA = 0x04;
-            // buttonFlag = 0x00;
             if (!button) {
                 state = TONE_wait;
             }
             else { // button
                 if (button == 0x01 && (rowFlag == 0x01)) { // Note C - 261.63
+                    scoreFlag = 0x01;
                     state = TONE_note;
                 }
                 else if (button == 0x02 && (rowFlag == 0x02)) { // Note D - 293.66
+                    scoreFlag = 0x01;
                     state = TONE_note;
                 }
                 else if (button == 0x04 && (rowFlag == 0x03)) { // Note E - 329.63
+                    scoreFlag = 0x01;
                     state = TONE_note;
                 }
                 else if (button == 0x08 && (rowFlag == 0x04)) { // Note F - 349.23
+                    scoreFlag = 0x01;
                     state = TONE_note;
                 }
                 else if (button == 0x10 && (rowFlag == 0x05)) { // Note G - 392.00
+                    scoreFlag = 0x01;
                     state = TONE_note;
                 }
                 else { // Multiple buttons or Doesn't match row
+                    scoreFlag = 0x02;
                     state = TONE_waitRelease;
                 }
-                // buttonFlag = button;
-                // state = TONE_note;
             }
             break;
         case TONE_note:
-            PORTA = 0x0C;
-            if (hold) {
+            if (hold <= 1) {
                 state = TONE_note;
             }
-            else if (!button && !hold) {
+            else if (!button && hold > 1) {
+                scoreFlag = 0x00;
                 state = TONE_wait;
             }
-            else { // button && !hold
-                // buttonFlag = button;
+            else { // button && hold > 1
+                scoreFlag = 0x02;
                 state = TONE_waitRelease;
             }
-            hold = !hold;
+            hold = (hold + 1) % 3;
             break;
         case TONE_waitRelease:
-            PORTA = 0x08;
             if (!button) {
                 state = TONE_wait;
             }
@@ -183,13 +184,10 @@ int ToneSMTick(int state) {
 
     switch(state) {    
         case TONE_note:
-            // if (!rowFlag) {
-            //     PORTA = 0x00;
-            // }
-            // else {
-            //     PORTA = 0x04;
-            // }
-            if (button == 0x01) { // Note C - 261.63
+            if (hold == 0x02) {
+                noteFrequency = 0;
+            }
+            else if (button == 0x01) { // Note C - 261.63
                 noteFrequency = 261.63;
             }
             else if (button == 0x02) { // Note D - 293.66
@@ -218,74 +216,11 @@ int ToneSMTick(int state) {
     return state;
 }
 
-// enum SCORE_States { SCORE_SMStart, SCORE_wait, SCORE_compare, SCORE_waitRelease };
+enum LEVEL_States {  };
 
-// int ScoreSMTick(int state) {
+int LevelSMTick(int state) {
 
-//     static unsigned char score = 0;
-
-//     switch(state) {
-//         case SCORE_SMStart:
-//             state = SCORE_wait;
-//             break;
-
-//         case SCORE_wait:
-//             if (!buttonFlag) {
-//                 state = SCORE_wait;
-//             }
-//             else { // buttonFlag
-//                 state = SCORE_compare;
-//             }
-//             break;
-
-//         case SCORE_compare:
-//             if (!buttonFlag) {
-//                 state = SCORE_wait;
-//             }
-//             else { // buttonFlag
-//                 // state = SCORE_waitRelease;
-//             }
-//             break;
-
-//         case SCORE_waitRelease:
-//             // set_PWM(392.00);
-//             if (!buttonFlag) {
-//                 state = SCORE_wait;
-//             }
-//             else { // buttonFlag
-//                 state = SCORE_waitRelease;
-//             }
-//             break;
-
-//         default:
-//             state = SCORE_SMStart;
-//             break;
-//     } 
-
-//     switch(state) {    
-//         case SCORE_compare:
-//             if (buttonFlag == rowFlag) { 
-//             set_PWM(261.63); 
-//                 score++;
-//                 // PWM_on();
-//                 PORTA = 0x00;
-//             }
-//             else {
-//             set_PWM(392.00);                
-//                 // PWM_off();
-//                 PORTA = 0x04;
-//             }
-//             break;
-
-//         default:
-//             set_PWM(329.63);
-//             // PWM_off();
-//             PORTA = 0x00;
-//             break;
-//     }
-
-//     return state;
-// }
+}
 
 int main(void) {
     /* Insert DDR and PORT initializations */
