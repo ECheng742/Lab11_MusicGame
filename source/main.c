@@ -205,7 +205,6 @@ int ToneSMTick(int state) {
             break;
 
         case TONE_wait:
-            noteFrequency = 329.63;
             break;
 
         default:
@@ -305,7 +304,7 @@ int main(void) {
     task1.TickFct = &Demo_Tick;
 
     task2.state = start;
-    task2.period = 50;
+    task2.period = 100;
     task2.elapsedTime = task2.period;
     task2.TickFct = &ToneSMTick;
 
