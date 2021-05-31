@@ -45,7 +45,8 @@ int Demo_Tick(int state) {
 	switch (state) {
         case shift:	
             if (pattern == 0x01) { 
-				pattern = 0x80;		   
+				pattern = 0x80;
+                rowFlag = 0x00;		   
                 numRow = (int) (rand() % 5 + 1);
 				// row = (row << 1) | 0x01;
                 if (numRow == 1) {
@@ -68,8 +69,8 @@ int Demo_Tick(int state) {
                 }
 			} else { // Shift LED one spot to the right on current row
 				pattern >>= 1;
-                if (pattern == 0x01) {rowFlag = 0x01;}
-                else {rowFlag = 0x00;}
+                // if (pattern == 0x01) {rowFlag = 0x01;}
+                // else {rowFlag = 0x00;}
 			}
 			break;
 		default:
@@ -77,12 +78,6 @@ int Demo_Tick(int state) {
 	}
 	PORTC = pattern;	// Pattern to display
 	PORTD = row;		// Row(s) displaying pattern	
-    if (!rowFlag) {
-                PORTA = 0x00;
-            }
-            else {
-                PORTA = 0x04;
-            }
 	return state;
 }
 
