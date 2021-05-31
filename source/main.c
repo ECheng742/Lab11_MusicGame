@@ -270,7 +270,7 @@ int LevelSMTick(int state) {
             break;
     }
 
-            PORTA = points << 2; // FIXME
+            PORTA = deductions << 2; // FIXME
     return state;    
 }
 
