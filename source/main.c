@@ -190,28 +190,28 @@ int ScoreSMTick(int state) {
             break;
 
         case SCORE_wait:
-            if (!button) {
+            if (!buttonFlag) {
                 state = SCORE_wait;
             }
-            else { // button
+            else { // buttonFlag
                 state = SCORE_compare;
             }
             break;
 
         case SCORE_compare:
-            if (!button) {
+            if (!buttonFlag) {
                 state = SCORE_wait;
             }
-            else { // button
+            else { // buttonFlag
                 state = SCORE_waitRelease;
             }
             break;
 
         case SCORE_waitRelease:
-            if (!button) {
+            if (!buttonFlag) {
                 state = SCORE_wait;
             }
-            else { // button
+            else { // buttonFlag
                 state = SCORE_waitRelease;
             }
             break;
@@ -222,7 +222,7 @@ int ScoreSMTick(int state) {
     } 
 
     switch(state) {    
-        case TONE_note:
+        case SCORE_compare:
             if (buttonFlag == rowFlag) { 
                 score++;
             }
