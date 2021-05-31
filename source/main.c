@@ -19,7 +19,7 @@
 #endif
 
 unsigned char buttonFlag = 0x00;
-unsigned char rowFlag = 0xFF;
+unsigned char rowFlag = 0;
 
 // LED Matrix SM: Displays running lights
 enum Demo_States {shift};
@@ -30,6 +30,8 @@ int Demo_Tick(int state) {
 	static unsigned char row = 0xFE;  	// (s) displaying pattern. 
 							            // 0: display pattern on row
 							            // 1: do NOT display pattern on row
+    
+    static unsigned numRow = 0x00;
 
 	// Transitions
 	switch (state) {
@@ -42,32 +44,31 @@ int Demo_Tick(int state) {
 	// Actions
 	switch (state) {
         case shift:	
-            if (row == 0xEF && pattern == 0x01) { // Reset demo 
-				pattern = 0x80;		    
-				row = 0xFE;
-			} else if (pattern == 0x01) { // Move LED to start of next row
-				pattern = 0x80;
-                rowFlag = (int) (rand() % 5 + 1);
+            if (pattern == 0x01) { 
+				pattern = 0x80;		   
+                numRow = (int) (rand() % 5 + 1);
+                rowFlag = numRow;
 				// row = (row << 1) | 0x01;
-                if (rowFlag == 1) {
+                if (numRow == 1) {
                     row = 0xFE;
                 }
-                else if (rowFlag == 2) {
+                else if (numRow == 2) {
                     row = 0xFD;
                 }
-                else if (rowFlag == 3) {
+                else if (numRow == 3) {
                     row = 0xFB;
                 }
-                else if (rowFlag == 4) {
+                else if (numRow == 4) {
                     row = 0xF7;
                 }
-                else if (rowFlag == 5) {
+                else if (numRow == 5) {
                     row = 0xEF;
                 }
                 else { // Failsafe - select none of the rows
                     row = 0xFF;
                 }
 			} else { // Shift LED one spot to the right on current row
+                rowFlag = 0x00;
 				pattern >>= 1;
 			}
 			break;
@@ -151,30 +152,36 @@ int ToneSMTick(int state) {
             break;
     
         case TONE_note:
-            // if (button == 0x01) { // Note C - 261.63
-            //     noteFrequency = 261.63;
-            // }
-            // else if (button == 0x02) { // Note D - 293.66
-            //     noteFrequency = 293.66;
-            // }
-            // else if (button == 0x04) { // Note E - 329.63
-            //     noteFrequency = 329.63;
-            // }
-            // else if (button == 0x08) { // Note F - 349.23
-            //     noteFrequency = 349.23;
-            // }
-            // else if (button == 0x10) { // Note G - 392.00
-            //     noteFrequency = 392.00;
-            // }
-            // else { 
-            //     noteFrequency = 0;
-            // }
+            if (rowFlag && (rowFlag == button)) {
+                if (button == 0x01) { // Note C - 261.63
+                    noteFrequency = 261.63;
+                }
+                else if (button == 0x02) { // Note D - 293.66
+                    noteFrequency = 293.66;
+                }
+                else if (button == 0x04) { // Note E - 329.63
+                    noteFrequency = 329.63;
+                }
+                else if (button == 0x08) { // Note F - 349.23
+                    noteFrequency = 349.23;
+                }
+                else if (button == 0x10) { // Note G - 392.00
+                    noteFrequency = 392.00;
+                }
+                else { 
+                    noteFrequency = 0;
+                }
+            }
+            else {
+                noteFrequency = 0;
+            }
             break;
 
         default:
+            noteFrequency = 0;
             break;
     }
-    // set_PWM(noteFrequency);
+    set_PWM(noteFrequency);
 
     return state;
 }
@@ -256,8 +263,8 @@ int main(void) {
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
 
-    static task task1, task2, task3;
-    task *tasks[] = { &task1, &task2, &task3 };
+    static task task1, task2;
+    task *tasks[] = { &task1, &task2 };
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -272,10 +279,10 @@ int main(void) {
     task2.elapsedTime = task2.period;
     task2.TickFct = &ToneSMTick;
 
-    task3.state = start;
-    task3.period = 100;
-    task3.elapsedTime = task3.period;
-    task3.TickFct = &ScoreSMTick;
+    // task3.state = start;
+    // task3.period = 100;
+    // task3.elapsedTime = task3.period;
+    // task3.TickFct = &ScoreSMTick;
 
     unsigned short i;
     unsigned long GCD = tasks[0]->period;
