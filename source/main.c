@@ -183,8 +183,10 @@ int main(void) {
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
 
-    static task task1, task2;
-    task *tasks[] = { &task1, &task2 };
+    // static task task1, task2;
+    // task *tasks[] = { &task1, &task2 };
+    static task task1;
+    task *tasks[] = { &task1 };
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -194,10 +196,10 @@ int main(void) {
     task1.elapsedTime = task1.period;
     task1.TickFct = &Demo_Tick;
 
-    task2.state = start;
-    task2.period = 50;
-    task2.elapsedTime = task2.period;
-    task2.TickFct = &ToneSMTick;
+    // task2.state = start;
+    // task2.period = 50;
+    // task2.elapsedTime = task2.period;
+    // task2.TickFct = &ToneSMTick;
 
     unsigned short i;
     unsigned long GCD = tasks[0]->period;
@@ -205,7 +207,7 @@ int main(void) {
         GCD = findGCD(GCD,tasks[i]->period);
     }
 
-    PWM_on();
+    // PWM_on();
     TimerSet(GCD);
     TimerOn();
 
