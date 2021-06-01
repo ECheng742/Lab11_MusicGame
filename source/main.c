@@ -21,12 +21,14 @@
 unsigned char scoreFlag = 0x00;
 unsigned char rowFlag = 0x00;
 unsigned char lostFlag = 0x00;
-unsigned char wonFlag = 0x00;
+unsigned char levelFlag = 0x00;
+unsigned char pointsFlag = 0x00;
+unsigned char deductionsFlag = 0x00;
+unsigned char checkFlag = 0x00;
 
 // LED Matrix SM: Displays running lights
-enum Demo_States {SMStart, shift};
-int Demo_Tick(int state) {
-
+enum DISPLAY_States {DISPLAY_SMStart, DISPLAY_shift};
+int DisplaySMTick(int state) {
 	// Local Variables
 	static unsigned char pattern = 0x80;	// LED pattern - 0: LED off; 1: LED on
 	static unsigned char row = 0xFE;  	// (s) displaying pattern. 
@@ -37,19 +39,20 @@ int Demo_Tick(int state) {
 
 	// Transitions
 	switch (state) {
-        case SMStart:
-            state = shift;
+        case DISPLAY_SMStart:
+            state = DISPLAY_shift;
             break;
-		case shift:	
-            state = shift;
+		case DISPLAY_shift:	
+            state = DISPLAY_shift;
             break;
 		default:	
-            state = SMStart;
+            state = DISPLAY_SMStart;
 			break;
 	}	
+    
 	// Actions
 	switch (state) {
-        case shift:	
+        case DISPLAY_shift:	
             if (pattern == 0x01) { 
 				pattern = 0x80;
                 rowFlag = 0x00;		   
@@ -128,67 +131,82 @@ int ToneSMTick(int state) {
             break;
         case TONE_wait:
             // PORTA = 0x04; // FIXME
+            checkFlag = 0x00;
             if (!button) {
-                scoreFlag = 0x00;
-                if (rowFlag) {
-                    scoreFlag = 0x02;
-                }
+                // scoreFlag = 0x00;
+                // if (rowFlag) {
+                //     scoreFlag = 0x02;
+                // }
+                checkFlag = 0x01;
                 state = TONE_wait;
             }
             else { // button
-                if (button == 0x01 && (rowFlag == 0x01)) { // Note C - 261.63
-                    scoreFlag = 0x01;
+                checkFlag = 0x00;
+                if (!rowFlag) {
+                    // checkFlag = 0x01;
+                    deductionsFlag++;
+                    state = TONE_waitRelease;
+                }
+                else if (button == 0x01 && (rowFlag == 0x01)) { // Note C - 261.63
+                    pointsFlag++;
                     state = TONE_note;
                 }
                 else if (button == 0x02 && (rowFlag == 0x02)) { // Note D - 293.66
-                    scoreFlag = 0x01;
+                    pointsFlag++;
                     state = TONE_note;
                 }
                 else if (button == 0x04 && (rowFlag == 0x03)) { // Note E - 329.63
-                    scoreFlag = 0x01;
+                    pointsFlag++;
                     state = TONE_note;
                 }
                 else if (button == 0x08 && (rowFlag == 0x04)) { // Note F - 349.23
-                    scoreFlag = 0x01;
+                    pointsFlag++;
                     state = TONE_note;
                 }
                 else if (button == 0x10 && (rowFlag == 0x05)) { // Note G - 392.00
-                    scoreFlag = 0x01;
+                    pointsFlag++;
                     state = TONE_note;
                 }
-                else { // Multiple buttons or Doesn't match row
-                    scoreFlag = 0x02;
+                else { // Multiple buttons/doesn't match row
+                    deductionsFlag++;
+                    // penaltyFlag = 0x01;
                     state = TONE_waitRelease;
                 }
             }
             break;
         case TONE_note:
+            checkFlag = 0x00;
             // PORTA = 0x0C; // FIXME
             if (hold <= 1) {
-                scoreFlag = 0x00;
+                // scoreFlag = 0x00;
                 state = TONE_note;
             }
             else if (!button && hold > 1) {
-                scoreFlag = 0x00;
+                // scoreFlag = 0x00;
                 state = TONE_wait;
             }
             else { // button && hold > 1
-                scoreFlag = 0x02;
+                // scoreFlag = 0x02;
+                deductionsFlag++;
+                // penaltyFlag = 0x01;
+                // checkFlag = 0x01;
                 state = TONE_waitRelease;
             }
             hold = (hold + 1) % 3;
             break;
         case TONE_waitRelease:
+            checkFlag = 0x00;
             // PORTA = 0x08; // FIXME
             if (!button) {
-                scoreFlag = 0x00;
+                // scoreFlag = 0x00;
                 state = TONE_wait;
             }
             else { // button
-                scoreFlag = 0x00;
-                if (rowFlag) {
-                    scoreFlag = 0x02;
-                }
+                // scoreFlag = 0x00;
+                // if (rowFlag) {
+                //     scoreFlag = 0x02;
+                // }
+                checkFlag = 0x01;
                 state = TONE_waitRelease;
             }
             break;
@@ -231,11 +249,33 @@ int ToneSMTick(int state) {
     return state;
 }
 
+enum PENALTY_States { PENALTY_SMStart, PENALTY_idle };
+
+int PenaltySMTick(int state) {
+    switch(state) {
+        case PENALTY_SMStart:
+            state = PENALTY_idle;
+            break;
+        
+        case PENALTY_idle:
+            if (checkFlag) {
+                if (rowFlag) {
+                    deductionsFlag++;
+                }
+            }
+            state = PENALTY_idle;
+            break;
+
+        default:
+            state = PENALTY_SMStart;
+            break;
+    }
+    return state;
+}
+
 enum LEVEL_States { LEVEL_SMStart, LEVEL_compare, LEVEL_reset };
-unsigned points = 0x00;
+// unsigned points = 0x00; // FIXME?
 int LevelSMTick(int state) {
-    // static unsigned points = 0x00;
-    static unsigned deductions = 0x00;
 
     switch(state) {
         case LEVEL_SMStart:
@@ -243,30 +283,31 @@ int LevelSMTick(int state) {
             break;
 
         case LEVEL_compare:
-            if (scoreFlag == 0x01) {
-                points++;
-                state = LEVEL_compare;
-            }
-            else if (scoreFlag == 0x02) {
-                deductions++;
-                state = LEVEL_compare;
-            }
-            if (deductions >= 3) {
+            // if (pointsFlag == 0x01) {
+            //     points++;
+            //     state = LEVEL_compare;
+            // }
+            // else if (scoreFlag == 0x02) {
+            //     deductions++;
+            //     state = LEVEL_compare;
+            // }
+            if (deductionsFlag >= 3) {
                 lostFlag = 0x01;
                 state = LEVEL_reset;
             }
             else { // deductions < 3
-                if (points == 0x05) {
-                    points = 0x00;
-                    wonFlag = 0x01;
+                if (pointsFlag == 0x03) {
+                    pointsFlag = 0x00;
+                    levelFlag = 0x01;
                 }
+                state = LEVEL_compare;
             }
             break;
 
         case LEVEL_reset:
-            points = 0x00;
-            deductions = 0x00;
-            lostFlag = 0x01;
+            pointsFlag = 0x00;
+            deductionsFlag = 0x00;
+            // lostFlag = 0x01;
             state = LEVEL_reset;
             break;
 
@@ -275,7 +316,7 @@ int LevelSMTick(int state) {
             break;
     }
 
-            PORTA = deductions << 2; // FIXME
+            // PORTA = deductions << 2; // FIXME
     return state;    
 }
 
@@ -287,26 +328,31 @@ int main(void) {
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
 
-    static task task1, task2, task3;
-    task *tasks[] = { &task1, &task2, &task3 };
+    static task display, tone, penalty, level;
+    task *tasks[] = { &display, &tone, &penalty, &level };
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
 
-    task1.state = start;
-    task1.period = 300;
-    task1.elapsedTime = task1.period;
-    task1.TickFct = &Demo_Tick;
+    display.state = start;
+    display.period = 300;
+    display.elapsedTime = display.period;
+    display.TickFct = &DisplaySMTick;
 
-    task2.state = start;
-    task2.period = 200;
-    task2.elapsedTime = task2.period;
-    task2.TickFct = &ToneSMTick;
+    tone.state = start;
+    tone.period = 100;
+    tone.elapsedTime = tone.period;
+    tone.TickFct = &toneSMTick;
 
-    task3.state = start;
-    task3.period = 100;
-    task3.elapsedTime = task3.period;
-    task3.TickFct = &LevelSMTick;
+    penalty.state = start;
+    penalty.period = 300;
+    penalty.elapsedTime = penalty.period;
+    penalty.TickFct = &penaltySMTick;
+
+    level.state = start;
+    level.period = 100;
+    level.elapsedTime = level.period;
+    level.TickFct = &LevelSMTick;
 
     unsigned short i;
     unsigned long GCD = tasks[0]->period;
