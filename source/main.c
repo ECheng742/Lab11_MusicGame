@@ -315,7 +315,7 @@ int LevelSMTick(int state) {
             state = LEVEL_SMStart;
             break;
     }
-
+    PORTA = pointsFlag << 2;
             // PORTA = deductions << 2; // FIXME
     return state;    
 }
