@@ -291,6 +291,7 @@ int LevelSMTick(int state) {
             //     deductions++;
             //     state = LEVEL_compare;
             // }
+
             // if (deductionsFlag >= 3) {
             //     lostFlag = 0x01;
             //     state = LEVEL_reset;
@@ -322,7 +323,7 @@ int LevelSMTick(int state) {
 
 int main(void) {
     /* Insert DDR and PORT initializations */
-    DDRA = 0x0C; PORTA = 0xF3;
+    DDRA = 0xFC; PORTA = 0x03;
     DDRB = 0xE0; PORTB = 0x1F;
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
