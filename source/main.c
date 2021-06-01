@@ -49,7 +49,7 @@ int DisplaySMTick(int state) {
             state = DISPLAY_SMStart;
 			break;
 	}	
-    
+
 	// Actions
 	switch (state) {
         case DISPLAY_shift:	
@@ -342,12 +342,12 @@ int main(void) {
     tone.state = start;
     tone.period = 100;
     tone.elapsedTime = tone.period;
-    tone.TickFct = &toneSMTick;
+    tone.TickFct = &ToneSMTick;
 
     penalty.state = start;
     penalty.period = 300;
     penalty.elapsedTime = penalty.period;
-    penalty.TickFct = &penaltySMTick;
+    penalty.TickFct = &PenaltySMTick;
 
     level.state = start;
     level.period = 100;
