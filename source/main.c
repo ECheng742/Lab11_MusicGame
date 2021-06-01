@@ -260,7 +260,7 @@ int PenaltySMTick(int state) {
         case PENALTY_idle:
             if (checkFlag) {
                 if (rowFlag) {
-                    // deductionsFlag++; // FIXME uncomment when done testing
+                    deductionsFlag++; // FIXME uncomment when done testing
                 }
             }
             state = PENALTY_idle;
@@ -291,17 +291,17 @@ int LevelSMTick(int state) {
             //     deductions++;
             //     state = LEVEL_compare;
             // }
-            if (deductionsFlag >= 3) {
-                lostFlag = 0x01;
-                state = LEVEL_reset;
-            }
-            else { // deductions < 3
-                if (pointsFlag == 0x03) {
-                    pointsFlag = 0x00;
-                    levelFlag = 0x01;
-                }
-                state = LEVEL_compare;
-            }
+            // if (deductionsFlag >= 3) {
+            //     lostFlag = 0x01;
+            //     state = LEVEL_reset;
+            // }
+            // else { // deductions < 3
+            //     if (pointsFlag == 0x03) {
+            //         pointsFlag = 0x00;
+            //         levelFlag = 0x01;
+            //     }
+            //     state = LEVEL_compare;
+            // }
             break;
 
         case LEVEL_reset:
@@ -315,7 +315,7 @@ int LevelSMTick(int state) {
             state = LEVEL_SMStart;
             break;
     }
-    PORTA = pointsFlag << 2;
+    PORTA = deductionsFlag << 2;
             // PORTA = deductions << 2; // FIXME
     return state;    
 }
