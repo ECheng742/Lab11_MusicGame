@@ -144,7 +144,7 @@ int ToneSMTick(int state) {
                 checkFlag = 0x00;
                 if (!rowFlag) {
                     // checkFlag = 0x01;
-                    deductionsFlag++;
+                    // deductionsFlag++; // FIXME uncomment when done testing
                     state = TONE_waitRelease;
                 }
                 else if (button == 0x01 && (rowFlag == 0x01)) { // Note C - 261.63
@@ -168,7 +168,7 @@ int ToneSMTick(int state) {
                     state = TONE_note;
                 }
                 else { // Multiple buttons/doesn't match row
-                    deductionsFlag++;
+                    // deductionsFlag++; // FIXME uncomment when done testing
                     // penaltyFlag = 0x01;
                     state = TONE_waitRelease;
                 }
@@ -187,7 +187,7 @@ int ToneSMTick(int state) {
             }
             else { // button && hold > 1
                 // scoreFlag = 0x02;
-                deductionsFlag++;
+                // deductionsFlag++; // FIXME uncomment when done testing
                 // penaltyFlag = 0x01;
                 // checkFlag = 0x01;
                 state = TONE_waitRelease;
@@ -260,7 +260,7 @@ int PenaltySMTick(int state) {
         case PENALTY_idle:
             if (checkFlag) {
                 if (rowFlag) {
-                    deductionsFlag++;
+                    // deductionsFlag++; // FIXME uncomment when done testing
                 }
             }
             state = PENALTY_idle;
