@@ -225,7 +225,7 @@ int ToneSMTick(int state) {
 
     switch(state) {
         case TONE_SMStart:
-            state = TONE_wait:
+            state = TONE_wait;
             break;
         case TONE_wait:
             if (!buttonFlag) {
@@ -247,7 +247,7 @@ int ToneSMTick(int state) {
             }
             break;
         default:
-            state = TONE_SMStart:
+            state = TONE_SMStart;
             break;
     }
 
