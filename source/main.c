@@ -20,6 +20,7 @@
 
 unsigned char scoreFlag = 0x00;
 unsigned char rowFlag = 0x00;
+unsigned char buttonFlag = 0x00;
 unsigned char lostFlag = 0x00;
 unsigned char levelFlag = 0x00;
 unsigned char pointsFlag = 0x00;
@@ -116,136 +117,168 @@ void PWM_off() {
     TCCR3B = 0x00;
 }
 
-// TONE SM: When a button is pressed, a corresponding note is played
+// Player SM: When a button is pressed, a corresponding note is played
 // If multiple buttons pressed, nothing played
-enum TONE_States { TONE_SMStart, TONE_wait, TONE_note, TONE_waitRelease };
+enum Player_States { Player_SMStart, Player_wait, Player_note, Player_waitRelease };
 
-int ToneSMTick(int state) {
+int PlayerSMTick(int state) {
     unsigned char button = ~PINB & 0x1F;
-    static double noteFrequency = 0x00;
     static char hold = 0x00; // Allows player extra period of time to let go w/o loss of points
+    unsigned char press = 0x00;
 
     switch(state) {
-        case TONE_SMStart:
-            state = TONE_wait;
+        case Player_SMStart:
+            state = Player_wait;
             break;
-        case TONE_wait:
-            // PORTA = 0x04; // FIXME
-            checkFlag = 0x00;
+        case Player_wait:
+            if (rowFlag) {
+                press = 0x00;
+                state = Player_note;
+            }
+            else if (!rowFlag && button) {
+                state = Player_waitRelease;
+            }
+            else { // !rowFlag && !button
+                state = Player_wait;
+            }
+            break;
+        case Player_note:
+            if (rowFlag) {
+                state = Player_note;
+            }
+            else if (!rowFlag && !button) {
+                if (!press) {
+                    deductionsFlag++;
+                }
+                else { // press
+                    pointsFlag++;
+                    press = 0x00;
+                }
+                state = Player_wait;
+            }
+            else if (!rowFlag && button) {
+                if (!press) {
+                    deductionsFlag++;
+                }
+                else { // press
+                    pointsFlag++;
+                    press = 0x00;
+                }
+                state = Player_waitRelease;
+            }
+            break;
+        case Player_waitRelease:
             if (!button) {
-                // scoreFlag = 0x00;
-                // if (rowFlag) {
-                //     scoreFlag = 0x02;
-                // }
-                checkFlag = 0x01;
-                state = TONE_wait;
+                state = Player_wait;
             }
             else { // button
-                checkFlag = 0x00;
-                if (!rowFlag) {
-                    // checkFlag = 0x01;
-                    // deductionsFlag++; // FIXME uncomment when done testing
-                    state = TONE_waitRelease;
-                }
-                else if (button == 0x01 && (rowFlag == 0x01)) { // Note C - 261.63
-                    pointsFlag++;
-                    state = TONE_note;
-                }
-                else if (button == 0x02 && (rowFlag == 0x02)) { // Note D - 293.66
-                    pointsFlag++;
-                    state = TONE_note;
-                }
-                else if (button == 0x04 && (rowFlag == 0x03)) { // Note E - 329.63
-                    pointsFlag++;
-                    state = TONE_note;
-                }
-                else if (button == 0x08 && (rowFlag == 0x04)) { // Note F - 349.23
-                    pointsFlag++;
-                    state = TONE_note;
-                }
-                else if (button == 0x10 && (rowFlag == 0x05)) { // Note G - 392.00
-                    pointsFlag++;
-                    state = TONE_note;
-                }
-                else { // Multiple buttons/doesn't match row
-                    // deductionsFlag++; // FIXME uncomment when done testing
-                    // penaltyFlag = 0x01;
-                    state = TONE_waitRelease;
-                }
-            }
-            break;
-        case TONE_note:
-            checkFlag = 0x00;
-            // PORTA = 0x0C; // FIXME
-            if (hold <= 1) {
-                // scoreFlag = 0x00;
-                state = TONE_note;
-            }
-            else if (!button && hold > 1) {
-                // scoreFlag = 0x00;
-                state = TONE_wait;
-            }
-            else { // button && hold > 1
-                // scoreFlag = 0x02;
-                // deductionsFlag++; // FIXME uncomment when done testing
-                // penaltyFlag = 0x01;
-                // checkFlag = 0x01;
-                state = TONE_waitRelease;
-            }
-            hold = (hold + 1) % 3;
-            break;
-        case TONE_waitRelease:
-            checkFlag = 0x00;
-            // PORTA = 0x08; // FIXME
-            if (!button) {
-                // scoreFlag = 0x00;
-                state = TONE_wait;
-            }
-            else { // button
-                // scoreFlag = 0x00;
-                // if (rowFlag) {
-                //     scoreFlag = 0x02;
-                // }
-                checkFlag = 0x01;
-                state = TONE_waitRelease;
+                state = Player_waitRelease;
             }
             break;
         default:
-            state = TONE_SMStart;
+            state = Player_SMStart;
             break;
     } 
 
     switch(state) {    
-        case TONE_note:
-            if (hold == 0x02) {
-                noteFrequency = 0;
+        case Player_note:
+            buttonFlag = button;
+            if (button == 0x01 && (rowFlag == 0x01)) { // Note C - 261.63
+                press = 0x01;
             }
-            else if (button == 0x01) { // Note C - 261.63
-                noteFrequency = 261.63;
+            else if (button == 0x02 && (rowFlag == 0x02)) { // Note D - 293.66
+                press = 0x01;
             }
-            else if (button == 0x02) { // Note D - 293.66
-                noteFrequency = 293.66;
+            else if (button == 0x04 && (rowFlag == 0x03)) { // Note E - 329.63
+                press = 0x01;
             }
-            else if (button == 0x04) { // Note E - 329.63
-                noteFrequency = 329.63;
+            else if (button == 0x08 && (rowFlag == 0x04)) { // Note F - 349.23
+                press = 0x01;
             }
-            else if (button == 0x08) { // Note F - 349.23
-                noteFrequency = 349.23;
+            else if (button == 0x10 && (rowFlag == 0x05)) { // Note G - 392.00
+                press = 0x01;
             }
-            else if (button == 0x10) { // Note G - 392.00
-                noteFrequency = 392.00;
-            }
-            else { 
-                noteFrequency = 0;
+            // if multiple buttons/no buttons/doesn't match row, press = 0x00 on exit of Player_note
+            else { // Multiple buttons/no buttons/doesn't match row
+                buttonFlag = 0x00;
+                // press = 0x00;
             }
             break;
 
+        case Player_waitRelease:
+            checkFlag = 0x01;
+            break;
+
+        default:
+            break;
+    }
+
+    return state;
+}
+
+enum TONE_States { TONE_SMStart, TONE_wait, TONE_hold };
+
+int ToneSMTick(int state) {
+    static unsigned char duration = 0x00;
+    static unsigned char note = 0x00;
+    static double noteFrequency = 0x00;
+
+    switch(state) {
+        case TONE_SMStart:
+            state = TONE_wait:
+            break;
+        case TONE_wait:
+            if (!buttonFlag) {
+                state = TONE_wait;
+            }
+            else { // buttonFlag
+                note = buttonFlag;
+                duration = 0x00;
+                state = TONE_hold;
+            }
+            break;
+        case TONE_hold:
+            if (duration > 0x01) {
+                duration = 0x00;
+                state = TONE_wait;
+            }
+            else { // duration <= 0x01
+                state = TONE_hold;
+            }
+            break;
+        default:
+            state = TONE_SMStart:
+            break;
+    }
+
+    switch(state) {
+        case TONE_hold: 
+            if (duration <= 0x01) {
+                if (button == 0x01) { // Note C - 261.63
+                    noteFrequency = 261.63;
+                }
+                else if (button == 0x02) { // Note D - 293.66
+                    noteFrequency = 293.66;
+                }
+                else if (button == 0x04) { // Note E - 329.63
+                    noteFrequency = 329.63;
+                }
+                else if (button == 0x08) { // Note F - 349.23
+                    noteFrequency = 349.23;
+                }
+                else if (button == 0x10) { // Note G - 392.00
+                    noteFrequency = 392.00;
+                }
+                else { 
+                    noteFrequency = 0;
+                }
+            }
+            duration++;
         default:
             noteFrequency = 0;
             break;
     }
     set_PWM(noteFrequency);
-
     return state;
 }
 
@@ -329,8 +362,8 @@ int main(void) {
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
 
-    static task display, tone, penalty, level;
-    task *tasks[] = { &display, &tone, &penalty, &level };
+    static task display, player, tone, penalty, level;
+    task *tasks[] = { &display, &player, &tone, &penalty, &level };
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -339,6 +372,11 @@ int main(void) {
     display.period = 300;
     display.elapsedTime = display.period;
     display.TickFct = &DisplaySMTick;
+
+    player.state = start;
+    player.period = 100;
+    player.elapsedTime = player.period;
+    player.TickFct = &PlayerSMTick;
 
     tone.state = start;
     tone.period = 100;
