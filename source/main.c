@@ -131,6 +131,7 @@ int PlayerSMTick(int state) {
             state = Player_wait;
             break;
         case Player_wait:
+            PORTA = 0x01 >> 2;
             if (rowFlag) {
                 press = 0x00;
                 state = Player_note;
@@ -143,6 +144,7 @@ int PlayerSMTick(int state) {
             }
             break;
         case Player_note:
+            PORTA = 0x03 >> 2;
             if (rowFlag) {
                 state = Player_note;
             }
@@ -168,6 +170,7 @@ int PlayerSMTick(int state) {
             }
             break;
         case Player_waitRelease:
+            PORTA = 0x02 >> 2;
             if (!button) {
                 state = Player_wait;
             }
@@ -349,7 +352,7 @@ int LevelSMTick(int state) {
             state = LEVEL_SMStart;
             break;
     }
-    PORTA = deductionsFlag << 2;
+    // PORTA = deductionsFlag << 2;
             // PORTA = deductions << 2; // FIXME
     return state;    
 }
