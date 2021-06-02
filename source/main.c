@@ -254,19 +254,19 @@ int ToneSMTick(int state) {
     switch(state) {
         case TONE_hold: 
             if (duration <= 0x01) {
-                if (button == 0x01) { // Note C - 261.63
+                if (buttonFlag == 0x01) { // Note C - 261.63
                     noteFrequency = 261.63;
                 }
-                else if (button == 0x02) { // Note D - 293.66
+                else if (buttonFlag == 0x02) { // Note D - 293.66
                     noteFrequency = 293.66;
                 }
-                else if (button == 0x04) { // Note E - 329.63
+                else if (buttonFlag == 0x04) { // Note E - 329.63
                     noteFrequency = 329.63;
                 }
-                else if (button == 0x08) { // Note F - 349.23
+                else if (buttonFlag == 0x08) { // Note F - 349.23
                     noteFrequency = 349.23;
                 }
-                else if (button == 0x10) { // Note G - 392.00
+                else if (buttonFlag == 0x10) { // Note G - 392.00
                     noteFrequency = 392.00;
                 }
                 else { 
