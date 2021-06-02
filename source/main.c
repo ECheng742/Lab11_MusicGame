@@ -30,8 +30,6 @@ unsigned char checkFlag = 0x00;
 // LED Matrix SM: Displays running lights
 enum DISPLAY_States {DISPLAY_SMStart, DISPLAY_shift};
 int DisplaySMTick(int state) {
-    
-    PORTA = 0x0F >> 2;
 	// Local Variables
 	static unsigned char pattern = 0x80;	// LED pattern - 0: LED off; 1: LED on
 	static unsigned char row = 0xFE;  	// (s) displaying pattern. 
@@ -124,7 +122,7 @@ void PWM_off() {
 enum Player_States { Player_SMStart, Player_wait, Player_note, Player_waitRelease };
 
 int PlayerSMTick(int state) {
-    // PORTA = 0x0F >> 2;
+    // PORTA = 0x0F  2;
     unsigned char button = ~PINB & 0x1F;
     static char hold = 0x00; // Allows player extra period of time to let go w/o loss of points
     unsigned char press = 0x00;
@@ -134,7 +132,7 @@ int PlayerSMTick(int state) {
             state = Player_wait;
             break;
         case Player_wait:
-            PORTA = 0x01 >> 2;
+            PORTA = 0x01 << 2;
             if (rowFlag) {
                 press = 0x00;
                 state = Player_note;
@@ -147,7 +145,7 @@ int PlayerSMTick(int state) {
             }
             break;
         case Player_note:
-            PORTA = 0x03 >> 2;
+            PORTA = 0x03 << 2;
             if (rowFlag) {
                 state = Player_note;
             }
@@ -173,7 +171,7 @@ int PlayerSMTick(int state) {
             }
             break;
         case Player_waitRelease:
-            PORTA = 0x02 >> 2;
+            PORTA = 0x02 << 2;
             if (!button) {
                 state = Player_wait;
             }
