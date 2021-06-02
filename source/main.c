@@ -228,7 +228,7 @@ int ToneSMTick(int state) {
             state = TONE_wait;
             break;
         case TONE_wait:
-    PORTA = 0x01 >> 2;
+    PORTA = 0x01 << 2;
             if (!buttonFlag) {
                 state = TONE_wait;
             }
@@ -239,7 +239,7 @@ int ToneSMTick(int state) {
             }
             break;
         case TONE_hold:
-    PORTA = 0x03 >> 2;
+    PORTA = 0x03 << 2;
             if (duration > 0x01) {
                 duration = 0x00;
                 state = TONE_wait;
