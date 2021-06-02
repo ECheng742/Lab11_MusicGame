@@ -122,6 +122,7 @@ void PWM_off() {
 enum Player_States { Player_SMStart, Player_wait, Player_note, Player_waitRelease };
 
 int PlayerSMTick(int state) {
+    PORTA = 0x0F >> 2;
     unsigned char button = ~PINB & 0x1F;
     static char hold = 0x00; // Allows player extra period of time to let go w/o loss of points
     unsigned char press = 0x00;
