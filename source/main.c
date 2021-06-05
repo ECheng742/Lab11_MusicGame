@@ -215,6 +215,7 @@ int PlayerSMTick(int state) {
 
         default:
             buttonFlag = 0x00;
+            checkFlag = 0x00;
             break;
     }
     return state;
