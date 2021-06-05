@@ -36,7 +36,7 @@ int DisplaySMTick(int state) {
 							            // 0: display pattern on row
 							            // 1: do NOT display pattern on row
     
-    static unsigned numRow = 0x00;
+    static unsigned numRow = 0x05;
 
 	// Transitions
 	switch (state) {
@@ -181,8 +181,6 @@ int PlayerSMTick(int state) {
         default:
             state = Player_SMStart;
             break;
-
-        PORTA = rowFlag;
     } 
 
     switch(state) {    
