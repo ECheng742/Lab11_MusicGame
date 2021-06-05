@@ -284,6 +284,7 @@ int ToneSMTick(int state) {
             noteFrequency = 0;
             break;
     }
+    PORTA = buttonFlag;
     set_PWM(noteFrequency);
     return state;
 }
