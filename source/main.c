@@ -279,13 +279,13 @@ int ToneSMTick(int state) {
                 else { 
                     noteFrequency = 0;
                 }
+    PORTA = buttonFlag;
             // }
             // duration++;
         default:
             noteFrequency = 0;
             break;
     }
-    PORTA = buttonFlag;
     set_PWM(noteFrequency);
     return state;
 }
