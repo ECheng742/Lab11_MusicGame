@@ -131,6 +131,7 @@ int PlayerSMTick(int state) {
             state = Player_wait;
             break;
         case Player_wait:
+            PORTA = 0x01 << 2;
             if (rowFlag) {
                 press = 0x00;
                 state = Player_note;
@@ -143,6 +144,7 @@ int PlayerSMTick(int state) {
             }
             break;
         case Player_note:
+        PORTA = 0x03 << 2;
             if (rowFlag) {
                 state = Player_note;
             }
@@ -168,6 +170,7 @@ int PlayerSMTick(int state) {
             }
             break;
         case Player_waitRelease:
+        PORTA = 0x07 << 2;
             if (!button) {
                 state = Player_wait;
             }
@@ -185,18 +188,23 @@ int PlayerSMTick(int state) {
             buttonFlag = button;
             if (button == 0x01 && (rowFlag == 0x01)) { // Note C - 261.63
                 press = 0x01;
+                buttonFlag = button;
             }
             else if (button == 0x02 && (rowFlag == 0x02)) { // Note D - 293.66
                 press = 0x01;
+                buttonFlag = button;
             }
             else if (button == 0x04 && (rowFlag == 0x03)) { // Note E - 329.63
                 press = 0x01;
+                buttonFlag = button;
             }
             else if (button == 0x08 && (rowFlag == 0x04)) { // Note F - 349.23
                 press = 0x01;
+                buttonFlag = button;
             }
             else if (button == 0x10 && (rowFlag == 0x05)) { // Note G - 392.00
                 press = 0x01;
+                buttonFlag = button;
             }
             // if multiple buttons/no buttons/doesn't match row, press = 0x00 on exit of Player_note
             else { // Multiple buttons/no buttons/doesn't match row
@@ -364,8 +372,10 @@ int main(void) {
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
 
-    static task display, player, tone, penalty, level;
-    task *tasks[] = { &display, &player, &tone, &penalty, &level };
+    // static task display, player, tone, penalty, level;
+    // task *tasks[] = { &display, &player, &tone, &penalty, &level };
+    static task display, player;
+    task *tasks[] = { &display, &player };
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -380,20 +390,20 @@ int main(void) {
     player.elapsedTime = player.period;
     player.TickFct = &PlayerSMTick;
 
-    tone.state = start;
-    tone.period = 100;
-    tone.elapsedTime = tone.period;
-    tone.TickFct = &ToneSMTick;
+    // tone.state = start;
+    // tone.period = 100;
+    // tone.elapsedTime = tone.period;
+    // tone.TickFct = &ToneSMTick;
 
-    penalty.state = start;
-    penalty.period = 300;
-    penalty.elapsedTime = penalty.period;
-    penalty.TickFct = &PenaltySMTick;
+    // penalty.state = start;
+    // penalty.period = 300;
+    // penalty.elapsedTime = penalty.period;
+    // penalty.TickFct = &PenaltySMTick;
 
-    level.state = start;
-    level.period = 100;
-    level.elapsedTime = level.period;
-    level.TickFct = &LevelSMTick;
+    // level.state = start;
+    // level.period = 100;
+    // level.elapsedTime = level.period;
+    // level.TickFct = &LevelSMTick;
 
     unsigned short i;
     unsigned long GCD = tasks[0]->period;
