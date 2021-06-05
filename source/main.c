@@ -213,9 +213,12 @@ int PlayerSMTick(int state) {
             buttonFlag = 0x00;
             break;
 
+        case Player_wait:
+            checkFlag = 0x01;
+            break;
+
         default:
             buttonFlag = 0x00;
-            checkFlag = 0x00;
             break;
     }
     return state;
