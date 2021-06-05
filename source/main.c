@@ -117,8 +117,7 @@ void PWM_off() {
     TCCR3B = 0x00;
 }
 
-// Player SM: When a button is pressed, a corresponding note is played
-// If multiple buttons pressed, nothing played
+// Player SM: Detects when a button is pressed correctly
 enum Player_States { Player_SMStart, Player_wait, Player_note, Player_waitRelease };
 
 int PlayerSMTick(int state) {
@@ -217,11 +216,12 @@ int PlayerSMTick(int state) {
             buttonFlag = 0x00;
             break;
     }
-    PORTA = buttonFlag;
     return state;
 }
 
-enum TONE_States { TONE_SMStart, TONE_wait, TONE_hold };
+// Tone SM: Plays corresponding note when a button is pressed correctly
+// Plays for the duration of the correct button press
+enum TONE_States { TONE_SMStart, TONE_wait };
 
 int ToneSMTick(int state) {
     static unsigned char duration = 0x00;
@@ -233,34 +233,33 @@ int ToneSMTick(int state) {
             state = TONE_wait;
             break;
         case TONE_wait:
-    PORTA = 0x01 << 2;
-            if (!buttonFlag) {
-                state = TONE_wait;
-            }
-            else { // buttonFlag
-                note = buttonFlag;
-                duration = 0x00;
-                state = TONE_hold;
-            }
+            // if (!buttonFlag) {
+            //     state = TONE_wait;
+            // }
+            // else { // buttonFlag
+            //     note = buttonFlag;
+            //     duration = 0x00;
+            //     state = TONE_hold;
+            // }
+            state = TONE_wait;
             break;
-        case TONE_hold:
-    PORTA = 0x03 << 2;
-            if (duration > 0x01) {
-                duration = 0x00;
-                state = TONE_wait;
-            }
-            else { // duration <= 0x01
-                state = TONE_hold;
-            }
-            break;
+        // case TONE_hold:
+        //     if (duration > 0x01) {
+        //         duration = 0x00;
+        //         state = TONE_wait;
+        //     }
+        //     else { // duration <= 0x01
+        //         state = TONE_hold;
+        //     }
+        //     break;
         default:
             state = TONE_SMStart;
             break;
     }
 
     switch(state) {
-        case TONE_hold: 
-            if (duration <= 0x01) {
+        case TONE_wait: 
+            // if (duration <= 0x01) {
                 if (buttonFlag == 0x01) { // Note C - 261.63
                     noteFrequency = 261.63;
                 }
@@ -279,8 +278,8 @@ int ToneSMTick(int state) {
                 else { 
                     noteFrequency = 0;
                 }
-            }
-            duration++;
+            // }
+            // duration++;
         default:
             noteFrequency = 0;
             break;
