@@ -18,14 +18,14 @@
 #include "../header/scheduler.h"
 #endif
 
-unsigned char scoreFlag = 0x00;
 unsigned char rowFlag = 0x00;
 unsigned char buttonFlag = 0x00;
 unsigned char lostFlag = 0x00;
 unsigned char levelFlag = 0x00;
-unsigned char pointsFlag = 0x00;
+unsigned char scoreFlag = 0x00;
 unsigned char deductionsFlag = 0x00;
-unsigned char checkFlag = 0x00;
+unsigned char penaltyCheckFlag = 0x00;
+unsigned char pointCheckFlag = 0x00;
 
 // LED Matrix SM: Displays running lights
 enum DISPLAY_States {DISPLAY_SMStart, DISPLAY_shift};
@@ -181,7 +181,8 @@ int PlayerSMTick(int state) {
 
     switch(state) {    
         case Player_note:
-            checkFlag = 0x00;
+            penaltyCheckFlag = 0x00;
+            pointCheckFlag = 0x01;
             if (button == 0x01 && (rowFlag == 0x01)) { // Note C - 261.63
                 press = 0x01;
                 buttonFlag = button;
@@ -205,19 +206,21 @@ int PlayerSMTick(int state) {
             // if multiple buttons/no buttons/doesn't match row, press = 0x00 on exit of Player_note
             else { // Multiple buttons/no buttons/doesn't match row
                 buttonFlag = 0x00;
-                checkFlag = 0x01;
+                penaltyCheckFlag = 0x01;
+                pointCheckFlag = 0x00;
                 // press = 0x00;
             }
-            // checkFlag = 0x00;
             break;
 
         case Player_waitRelease:
-            checkFlag = 0x01;
+            penaltyCheckFlag = 0x01;
+            pointCheckFlag = 0x00;
             buttonFlag = 0x00;
             break;
 
         default:
-            checkFlag = 0x01;
+            penaltyCheckFlag = 0x01;
+            pointCheckFlag = 0x00;
             buttonFlag = 0x00;
             break;
     }
@@ -275,29 +278,21 @@ int ToneSMTick(int state) {
 enum PENALTY_States { PENALTY_SMStart, PENALTY_idle };
 
 int PenaltySMTick(int state) {
-    static double gracePeriod = 0x00;
-
     switch(state) {
         case PENALTY_SMStart:
             state = PENALTY_idle;
             break;
         
         case PENALTY_idle:
-            if (checkFlag) {
+            if (penaltyCheckFlag) {
                 if (rowFlag) {
-                    // if (!gracePeriod) {
-                    //     gracePeriod = gracePeriod++;
-                    // }
-                    // else { // gracePeriod
-                        deductionsFlag++; // FIXME uncomment when done testing
-                    // }
-                }
-                else { // !rowFlag
-                    gracePeriod = 0x00;
+                    deductionsFlag++; // FIXME uncomment when done testing
                 }
             }
-            else { // !checkFlag
-                gracePeriod = 0x00;
+            if (pointCheckFlag) {
+                if (rowFlag) {
+                    scoreFlag++;
+                }
             }
             state = PENALTY_idle;
             break;
