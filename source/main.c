@@ -272,6 +272,8 @@ int ToneSMTick(int state) {
 enum PENALTY_States { PENALTY_SMStart, PENALTY_idle };
 
 int PenaltySMTick(int state) {
+    static double gracePeriod = 0x00;
+
     switch(state) {
         case PENALTY_SMStart:
             state = PENALTY_idle;
@@ -280,8 +282,19 @@ int PenaltySMTick(int state) {
         case PENALTY_idle:
             if (checkFlag) {
                 if (rowFlag) {
-                    deductionsFlag++; // FIXME uncomment when done testing
+                    if (!gracePeriod) {
+                        gracePeriod = gracePeriod++;
+                    }
+                    else { // gracePeriod
+                        deductionsFlag++; // FIXME uncomment when done testing
+                    }
                 }
+                else { // !rowFlag
+                    gracePeriod = 0x00;
+                }
+            }
+            else { // !checkFlag
+                gracePeriod = 0x00;
             }
             state = PENALTY_idle;
             break;
