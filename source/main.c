@@ -303,7 +303,7 @@ int PenaltySMTick(int state) {
             state = PENALTY_SMStart;
             break;
     }
-    PORTA = checkFlag; // fix
+    PORTA = deductionsFlag; // fix
     return state;
 }
 
