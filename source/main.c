@@ -150,7 +150,7 @@ int PlayerSMTick(int state) {
                     // deductionsFlag++;
                 }
                 else { // press
-                    pointsFlag++;
+                    // pointsFlag++;
                     press = 0x00;
                 }
                 state = Player_wait;
@@ -160,7 +160,7 @@ int PlayerSMTick(int state) {
                     // deductionsFlag++;
                 }
                 else { // press
-                    pointsFlag++;
+                    // pointsFlag++;
                     press = 0x00;
                 }
                 state = Player_waitRelease;
@@ -338,7 +338,7 @@ int LevelSMTick(int state) {
             break;
 
         case LEVEL_reset:
-            pointsFlag = 0x00;
+            // pointsFlag = 0x00;
             deductionsFlag = 0x00;
             // lostFlag = 0x01;
             state = LEVEL_reset;
