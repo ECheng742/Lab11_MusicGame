@@ -282,12 +282,12 @@ int PenaltySMTick(int state) {
         case PENALTY_idle:
             if (checkFlag) {
                 if (rowFlag) {
-                    if (!gracePeriod) {
-                        gracePeriod = gracePeriod++;
-                    }
-                    else { // gracePeriod
+                    // if (!gracePeriod) {
+                    //     gracePeriod = gracePeriod++;
+                    // }
+                    // else { // gracePeriod
                         deductionsFlag++; // FIXME uncomment when done testing
-                    }
+                    // }
                 }
                 else { // !rowFlag
                     gracePeriod = 0x00;
@@ -387,7 +387,7 @@ int main(void) {
     tone.TickFct = &ToneSMTick;
 
     penalty.state = start;
-    penalty.period = 200;
+    penalty.period = 300;
     penalty.elapsedTime = penalty.period;
     penalty.TickFct = &PenaltySMTick;
 
