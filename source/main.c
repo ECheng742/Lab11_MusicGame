@@ -131,9 +131,8 @@ int PlayerSMTick(int state) {
             state = Player_wait;
             break;
         case Player_wait:
-            PORTA = 0x01;
             if (rowFlag) {
-                press = 0x00;
+                // press = 0x00;
                 state = Player_note;
             }
             else if (!rowFlag && button) {
@@ -144,7 +143,6 @@ int PlayerSMTick(int state) {
             }
             break;
         case Player_note:
-        PORTA = 0x03;
             if (rowFlag) {
                 state = Player_note;
             }
@@ -170,7 +168,6 @@ int PlayerSMTick(int state) {
             }
             break;
         case Player_waitRelease:
-        PORTA = 0x07;
             if (!button) {
                 state = Player_wait;
             }
@@ -185,7 +182,6 @@ int PlayerSMTick(int state) {
 
     switch(state) {    
         case Player_note:
-            buttonFlag = button;
             if (button == 0x01 && (rowFlag == 0x01)) { // Note C - 261.63
                 press = 0x01;
                 buttonFlag = button;
@@ -220,7 +216,7 @@ int PlayerSMTick(int state) {
         default:
             break;
     }
-
+    PORTA = buttonFlag;
     return state;
 }
 
