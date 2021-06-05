@@ -89,7 +89,7 @@ int DisplaySMTick(int state) {
 	PORTD = row;		// Row(s) displaying pattern	
 	return state;
 }
-/* //Fix
+
 void set_PWM(double frequency) {
     static double current_frequency;
 
@@ -116,7 +116,7 @@ void PWM_off() {
     TCCR3A = 0x00;
     TCCR3B = 0x00;
 }
-*/ //Fix
+
 // Player SM: When a button is pressed, a corresponding note is played
 // If multiple buttons pressed, nothing played
 enum Player_States { Player_SMStart, Player_wait, Player_note, Player_waitRelease };
@@ -411,7 +411,7 @@ int main(void) {
         GCD = findGCD(GCD,tasks[i]->period);
     }
 
-    // PWM_on();
+    PWM_on();
     TimerSet(GCD);
     TimerOn();
 
