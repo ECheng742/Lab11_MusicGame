@@ -371,8 +371,8 @@ int main(void) {
 
     // static task display, player, tone, penalty, level;
     // task *tasks[] = { &display, &player, &tone, &penalty, &level };
-    static task display, player;
-    task *tasks[] = { &display, &player };
+    static task display, player, tone;
+    task *tasks[] = { &display, &player, &tone };
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -387,10 +387,10 @@ int main(void) {
     player.elapsedTime = player.period;
     player.TickFct = &PlayerSMTick;
 
-    // tone.state = start;
-    // tone.period = 100;
-    // tone.elapsedTime = tone.period;
-    // tone.TickFct = &ToneSMTick;
+    tone.state = start;
+    tone.period = 100;
+    tone.elapsedTime = tone.period;
+    tone.TickFct = &ToneSMTick;
 
     // penalty.state = start;
     // penalty.period = 300;
