@@ -147,7 +147,7 @@ int PlayerSMTick(int state) {
             }
             else if (!rowFlag && !button) {
                 if (!press) {
-                    // deductionsFlag++;
+                    deductionsFlag++;
                 }
                 else { // press
                     pointsFlag++;
@@ -157,7 +157,7 @@ int PlayerSMTick(int state) {
             }
             else if (!rowFlag && button) {
                 if (!press) {
-                    // deductionsFlag++;
+                    deductionsFlag++;
                 }
                 else { // press
                     pointsFlag++;
@@ -289,7 +289,6 @@ int PenaltySMTick(int state) {
             state = PENALTY_SMStart;
             break;
     }
-    PORTA = deductionsFlag; // fix
     return state;
 }
 
@@ -351,8 +350,8 @@ int main(void) {
 
     // static task display, player, tone, penalty, level;
     // task *tasks[] = { &display, &player, &tone, &penalty, &level };
-    static task display, player, tone, penalty;
-    task *tasks[] = { &display, &player, &tone, &penalty };
+    static task display, player, tone;
+    task *tasks[] = { &display, &player, &tone };
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -372,10 +371,10 @@ int main(void) {
     tone.elapsedTime = tone.period;
     tone.TickFct = &ToneSMTick;
 
-    penalty.state = start;
-    penalty.period = 300;
-    penalty.elapsedTime = penalty.period;
-    penalty.TickFct = &PenaltySMTick;
+    // penalty.state = start;
+    // penalty.period = 300;
+    // penalty.elapsedTime = penalty.period;
+    // penalty.TickFct = &PenaltySMTick;
 
     // level.state = start;
     // level.period = 100;
