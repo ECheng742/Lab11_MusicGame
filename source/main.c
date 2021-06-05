@@ -181,6 +181,7 @@ int PlayerSMTick(int state) {
 
     switch(state) {    
         case Player_note:
+            checkFlag = 0x00;
             if (button == 0x01 && (rowFlag == 0x01)) { // Note C - 261.63
                 press = 0x01;
                 buttonFlag = button;
@@ -204,9 +205,10 @@ int PlayerSMTick(int state) {
             // if multiple buttons/no buttons/doesn't match row, press = 0x00 on exit of Player_note
             else { // Multiple buttons/no buttons/doesn't match row
                 buttonFlag = 0x00;
+                checkFlag = 0x01;
                 // press = 0x00;
             }
-            checkFlag = 0x00;
+            // checkFlag = 0x00;
             break;
 
         case Player_waitRelease:
