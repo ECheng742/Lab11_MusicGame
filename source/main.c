@@ -214,6 +214,7 @@ int PlayerSMTick(int state) {
             break;
 
         default:
+            buttonFlag = 0x00;
             break;
     }
     PORTA = buttonFlag;
