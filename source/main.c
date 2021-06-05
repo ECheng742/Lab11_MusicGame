@@ -387,7 +387,7 @@ int main(void) {
     tone.TickFct = &ToneSMTick;
 
     penalty.state = start;
-    penalty.period = 300;
+    penalty.period = 200;
     penalty.elapsedTime = penalty.period;
     penalty.TickFct = &PenaltySMTick;
 
