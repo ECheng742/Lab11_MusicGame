@@ -417,12 +417,15 @@ int LevelSMTick(int state) {
                         }
                     }                    
                 }
+                // Check if player wins
                 if (levelFlag == 0x01) {
                     wonFlag = 0x01;
                     musicFlag = 0x01;
                     state = LEVEL_waitReset;
                 }
-                state = LEVEL_compare;
+                else {
+                    state = LEVEL_compare;
+                }
             }
             break;
         case LEVEL_waitReset:
