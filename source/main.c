@@ -221,6 +221,7 @@ int PlayerSMTick(int state) {
             buttonFlag = 0x00;
             break;
     }
+    
     return state;
 }
 
@@ -293,6 +294,7 @@ int ScoreSMTick(int state) {
             state = SCORE_SMStart;
             break;
     }
+        PORTA = deductionsFlag;
     return state;
 }
 
@@ -332,7 +334,6 @@ int LevelSMTick(int state) {
 
     }
     
-        PORTA = deductionsFlag;
     return state;    
 }
 
