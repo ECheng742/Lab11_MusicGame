@@ -221,7 +221,7 @@ int PlayerSMTick(int state) {
             buttonFlag = 0x00;
             break;
     }
-    PORTA = scoreFlag;
+    PORTA = pointCheckFlag;
     return state;
 }
 
