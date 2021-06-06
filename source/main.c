@@ -387,7 +387,8 @@ int MusicSMTick(int state) {
             noteFrequency = 0;
             break;
     }
-
+    set_PWM(noteFrequency);
+    return state;
 }
 
 enum LEVEL_States { LEVEL_SMStart, LEVEL_compare, LEVEL_waitReset };
