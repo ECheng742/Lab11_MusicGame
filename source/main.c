@@ -48,7 +48,7 @@ int DisplaySMTick(int state) {
             if (!lostFlag && !wonFlag) {
                 state = DISPLAY_shift;
             }
-            else if (lostFlag) { // lostFlag
+            else if (lostFlag) {
                 row = 0xFE;
                 state = DISPLAY_lost;
             }
@@ -403,6 +403,7 @@ int LevelSMTick(int state) {
             state = LEVEL_compare;
             break;
         case LEVEL_compare:
+            PORTA = 0x01;
             if (resetButton) {// Most precedence
                 lostFlag = 0x01;
                 state = LEVEL_waitReset;
@@ -433,6 +434,7 @@ int LevelSMTick(int state) {
             }
             break;
         case LEVEL_waitReset:
+            PORTA = 0x07;
             scoreFlag = 0x00;
             deductionsFlag = 0x00;
             levelDisplay = 0x00;
@@ -452,7 +454,7 @@ int LevelSMTick(int state) {
             state = LEVEL_SMStart;
             break;
     }
-    PORTA = levelDisplay;
+    // PORTA = levelDisplay; //fix
     return state;    
 }
 
