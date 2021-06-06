@@ -27,7 +27,7 @@ unsigned char lostFlag = 0x00;
 unsigned char levelFlag = 0x00;
 
 // LED Matrix SM: Displays running lights
-enum DISPLAY_States {DISPLAY_SMStart, DISPLAY_shift};
+enum DISPLAY_States { DISPLAY_SMStart, DISPLAY_shift, DISPLAY_lost };
 int DisplaySMTick(int state) {
 	// Local Variables
 	static unsigned char pattern = 0x80;	// LED pattern - 0: LED off; 1: LED on
@@ -43,7 +43,16 @@ int DisplaySMTick(int state) {
             state = DISPLAY_shift;
             break;
 		case DISPLAY_shift:	
-            state = DISPLAY_shift;
+            if (!lostFlag) {
+                state = DISPLAY_shift;
+            }
+            else { // lostFlag
+                row = 0xFE;
+                state = DISPLAY_lost;
+            }
+            break;
+        case DISPLAY_lost:
+            state = DISPLAY_lost;
             break;
 		default:	
             state = DISPLAY_SMStart;
@@ -81,6 +90,10 @@ int DisplaySMTick(int state) {
                 else {rowFlag = 0x00;}
 			}
 			break;
+        case DISPLAY_lost:
+            pattern = 0xFF:
+            row = (row << 1) | 0x01;
+            break;
 		default:
 	        break;
 	}
@@ -333,7 +346,6 @@ int LevelSMTick(int state) {
             break;
 
     }
-    PORTA = lostFlag;
     return state;    
 }
 
