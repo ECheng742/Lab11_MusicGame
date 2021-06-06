@@ -20,11 +20,11 @@
 
 unsigned char rowFlag = 0x00;
 unsigned char buttonFlag = 0x00;
+unsigned char lostFlag = 0x00;
+unsigned char levelFlag = 0x00;
 unsigned char scoreFlag = 0x00;
 unsigned char deductionsFlag = 0x00;
 unsigned char penaltyCheckFlag = 0x00;
-unsigned char lostFlag = 0x00;
-unsigned char levelFlag = 0x00;
 
 // LED Matrix SM: Displays running lights
 enum DISPLAY_States {DISPLAY_SMStart, DISPLAY_shift};
@@ -306,21 +306,30 @@ int LevelSMTick(int state) {
             break;
 
         case LEVEL_compare:
-            if (deductionsFlag >= 5) {
-                lostFlag = 0x01;
-                state = LEVEL_reset;
-            }
-            else { // deductions < 5
-                if (scoreFlag == 0x03) {
-                    scoreFlag = 0x00;
-                    levelFlag = 0x01;
-                }
-                state = LEVEL_compare;
-            }
+            // if (pointsFlag == 0x01) {
+            //     points++;
+            //     state = LEVEL_compare;
+            // }
+            // else if (scoreFlag == 0x02) {
+            //     deductions++;
+            //     state = LEVEL_compare;
+            // }
+
+            // if (deductionsFlag >= 3) {
+            //     lostFlag = 0x01;
+            //     state = LEVEL_reset;
+            // }
+            // else { // deductions < 3
+            //     if (pointsFlag == 0x03) {
+            //         pointsFlag = 0x00;
+            //         levelFlag = 0x01;
+            //     }
+            //     state = LEVEL_compare;
+            // }
             break;
 
         case LEVEL_reset:
-            scoreFlag = 0x00;
+            // pointsFlag = 0x00;
             deductionsFlag = 0x00;
             // lostFlag = 0x01;
             state = LEVEL_reset;
@@ -329,9 +338,9 @@ int LevelSMTick(int state) {
         default:
             state = LEVEL_SMStart;
             break;
-
-        PORTA = levelFlag;
     }
+    // PORTA = deductionsFlag << 2;
+            // PORTA = deductions << 2; // FIXME
     return state;    
 }
 
