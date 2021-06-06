@@ -403,7 +403,10 @@ int LevelSMTick(int state) {
             state = LEVEL_compare;
             break;
         case LEVEL_compare:
-            if (deductionsFlag >= 20) {
+            if (resetButton) {// Most precedence
+                state = LEVEL_waitReset;
+            }
+            else if (deductionsFlag >= 20) {
                 lostFlag = 0x01;
                 state = LEVEL_waitReset;
             }
