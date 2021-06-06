@@ -299,13 +299,13 @@ int ToneSMTick(int state) {
                 else { 
                     noteFrequency = 0;
                 }
+                set_PWM(noteFrequency);
             }
             break;
         default:
             noteFrequency = 0;
             break;
     }
-    set_PWM(noteFrequency);
     return state;
 }
 
