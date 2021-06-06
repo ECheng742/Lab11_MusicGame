@@ -133,6 +133,7 @@ int PlayerSMTick(int state) {
                 state = Player_note;
             }
             else if (!rowFlag && button) {
+                deductionsFlag++;
                 state = Player_waitRelease;
             }
             else { // !rowFlag && !button
