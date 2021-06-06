@@ -24,7 +24,7 @@ unsigned char scoreFlag = 0x00;
 unsigned char deductionsFlag = 0x00;
 unsigned char penaltyCheckFlag = 0x00;
 unsigned char lostFlag = 0x00;
-unsigned char levelFlag = 0x00;
+unsigned char levelFlag = 0x80;
 
 // LED Matrix SM: Displays running lights
 enum DISPLAY_States { DISPLAY_SMStart, DISPLAY_shift, DISPLAY_lost };
@@ -335,7 +335,9 @@ int LevelSMTick(int state) {
             else { // deductions < 10
                 if (scoreFlag == 0x03) {
                     scoreFlag = 0x00;
-                    levelFlag = 0x01;
+                    if (levelFlag > 0x02) {
+                        levelFlag = levelFlag >> 1;
+                    }                    
                 }
                 state = LEVEL_compare;
             }
@@ -346,6 +348,7 @@ int LevelSMTick(int state) {
             deductionsFlag = 0x00;
             if (resetButton) {
                 lostFlag = 0x00;
+                levelFlag = 0x08;
                 state = LEVEL_compare;
             }
             else { // !resetButton
@@ -358,7 +361,7 @@ int LevelSMTick(int state) {
             break;
 
     }
-    PORTA = resetButton;
+    PORTA = levelFlag;
     return state;    
 }
 
