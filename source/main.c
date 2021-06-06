@@ -412,7 +412,7 @@ int LevelSMTick(int state) {
                 state = LEVEL_forfeit;
             }
             else { // deductions < 15
-                if (scoreFlag == 0x03) {
+                if (scoreFlag == 0x02 && levelFlag > 0x08) {
                     scoreFlag = 0x00;
                     if (levelFlag >= 0x02) {
                         levelFlag = levelFlag >> 1;
@@ -420,6 +420,15 @@ int LevelSMTick(int state) {
                             levelDisplay = levelDisplay | levelFlag;
                         }
                     }                    
+                }
+                else if (scoreFlag == 0x03) {
+                    scoreFlag = 0x00;
+                    if (levelFlag >= 0x02) {
+                        levelFlag = levelFlag >> 1;
+                        if (levelFlag != 0x01) {
+                            levelDisplay = levelDisplay | levelFlag;
+                        }
+                    }   
                 }
                 // Check if player wins
                 if (levelFlag == 0x01) {
