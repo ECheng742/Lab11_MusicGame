@@ -364,7 +364,7 @@ int LevelSMTick(int state) {
 int main(void) {
     /* Insert DDR and PORT initializations */
     DDRA = 0xFF; PORTA = 0x00;
-    DDRB = 0xE0; PORTB = 0x1F;
+    DDRB = 0xA0; PORTB = 0x5F;
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
