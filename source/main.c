@@ -295,7 +295,6 @@ int ScoreSMTick(int state) {
             state = SCORE_SMStart;
             break;
     }
-        PORTA = deductionsFlag;
     return state;
 }
 
@@ -309,11 +308,11 @@ int LevelSMTick(int state) {
             break;
 
         case LEVEL_compare:
-            if (deductionsFlag >= 5) {
+            if (deductionsFlag >= 10) {
                 lostFlag = 0x01;
                 state = LEVEL_reset;
             }
-            else { // deductions < 5
+            else { // deductions < 10
                 if (scoreFlag == 0x03) {
                     scoreFlag = 0x00;
                     levelFlag = 0x01;
@@ -334,7 +333,7 @@ int LevelSMTick(int state) {
             break;
 
     }
-    
+    PORTA = deductionsFlag;
     return state;    
 }
 
