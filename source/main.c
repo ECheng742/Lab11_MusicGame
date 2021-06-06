@@ -330,7 +330,7 @@ int LevelSMTick(int state) {
         case LEVEL_compare:
             if (deductionsFlag >= 10) {
                 lostFlag = 0x01;
-                state = LEVEL_reset;
+                state = LEVEL_waitReset;
             }
             else { // deductions < 10
                 if (scoreFlag == 0x03) {
