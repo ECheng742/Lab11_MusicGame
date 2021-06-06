@@ -434,6 +434,7 @@ int LevelSMTick(int state) {
             }
             break;
         case LEVEL_forfeit:
+            PORTA = 0x03;
             if (resetButton) {
                 state = LEVEL_forfeit;
             }
