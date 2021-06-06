@@ -345,10 +345,10 @@ int LevelSMTick(int state) {
             scoreFlag = 0x00;
             deductionsFlag = 0x00;
             if (resetButton) {
+                lostFlag = 0x00;
                 state = LEVEL_compare;
             }
             else { // !resetButton
-                lostFlag = 0x00;
                 state = LEVEL_waitReset;
             }
             break;
