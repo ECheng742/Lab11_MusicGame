@@ -26,6 +26,7 @@ unsigned char penaltyCheckFlag = 0x00;
 unsigned char lostFlag = 0x00;
 unsigned char levelFlag = 0x80;
 unsigned char wonFlag = 0x00;
+unsigned char musicFlag = 0x00;
 
 // LED Matrix SM: Displays running lights
 enum DISPLAY_States { DISPLAY_SMStart, DISPLAY_shift, DISPLAY_lost, DISPLAY_won };
@@ -248,12 +249,6 @@ int PlayerSMTick(int state) {
             }
             break;
 
-        // case Player_waitRelease:
-        //     penaltyCheckFlag = 0x01;
-        //     pointCheckFlag = 0x00;
-        //     buttonFlag = 0x00;
-        //     break;
-
         default:
             penaltyCheckFlag = 0x01;
             pointCheckFlag = 0x00;
@@ -336,8 +331,67 @@ int ScoreSMTick(int state) {
     return state;
 }
 
+enum MUSIC_States { MUSIC_SMStart, MUSIC_wait, MUSIC_play };
+
+int MusicSMTick(int state) {
+    unsigned char buttons = ~PINB & 0x1F;
+    static double noteFrequency = 0x00;
+
+    switch(state) {
+        case MUSIC_SMStart:
+            state = MUSIC_wait;
+            break;
+        case MUSIC_wait:
+            if (musicFlag) {
+                state = MUSIC_play;
+            }
+            else { // !musicFlag
+                state = MUSIC_wait;
+            }
+            break;
+        case MUSIC_play:
+            if (musicFlag) {
+                state = MUSIC_play;
+            }
+            else { // !musicFlag
+                state = MUSIC_wait;
+            }
+            break;
+        default:
+            state = MUSIC_SMStart;
+            break;
+    }
+
+    switch(state) {
+        case MUSIC_play:
+            if (buttons == 0x01) { // Note C - 261.63
+                noteFrequency = 261.63;
+            }
+            else if (buttons == 0x02) { // Note D - 293.66
+                noteFrequency = 293.66;
+            }
+            else if (buttons == 0x04) { // Note E - 329.63
+                noteFrequency = 329.63;
+            }
+            else if (buttons == 0x08) { // Note F - 349.23
+                noteFrequency = 349.23;
+            }
+            else if (buttons == 0x10) { // Note G - 392.00
+                noteFrequency = 392.00;
+            }
+            else { 
+                noteFrequency = 0;
+            }
+            break;
+        default:
+            noteFrequency = 0;
+            break;
+    }
+
+}
+
 enum LEVEL_States { LEVEL_SMStart, LEVEL_compare, LEVEL_waitReset };
-// unsigned points = 0x00; // FIXME?
+
 int LevelSMTick(int state) {
     unsigned char resetButton = (~PINB >> 5) & 0x01;
 
@@ -359,6 +413,7 @@ int LevelSMTick(int state) {
                 }
                 if (levelFlag == 0x01) {
                     wonFlag = 0x01;
+                    musicFlag = 0x01;
                     state = LEVEL_waitReset;
                 }
                 state = LEVEL_compare;
@@ -370,6 +425,7 @@ int LevelSMTick(int state) {
             if (resetButton) {
                 lostFlag = 0x00;
                 wonFlag = 0x00;
+                musicFlag = 0x00;
                 levelFlag = 0x80;
                 state = LEVEL_compare;
             }
@@ -393,8 +449,8 @@ int main(void) {
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
 
-    static task display, player, tone, score, level;
-    task *tasks[] = { &display, &player, &tone, &score, &level };
+    static task display, player, tone, score, level, music;
+    task *tasks[] = { &display, &player, &tone, &score, &level, &music };
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -423,6 +479,11 @@ int main(void) {
     level.period = 100;
     level.elapsedTime = level.period;
     level.TickFct = &LevelSMTick;
+
+    music.state = start;
+    music.period = 100;
+    music.elapsedTime = music.period;
+    music.TickFct = &MusicSMTick;
 
     unsigned short i;
     unsigned long GCD = tasks[0]->period;
