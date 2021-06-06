@@ -280,23 +280,25 @@ int ToneSMTick(int state) {
 
     switch(state) {
         case TONE_wait: 
-            if (buttonFlag == 0x01) { // Note C - 261.63
-                noteFrequency = 261.63;
-            }
-            else if (buttonFlag == 0x02) { // Note D - 293.66
-                noteFrequency = 293.66;
-            }
-            else if (buttonFlag == 0x04) { // Note E - 329.63
-                noteFrequency = 329.63;
-            }
-            else if (buttonFlag == 0x08) { // Note F - 349.23
-                noteFrequency = 349.23;
-            }
-            else if (buttonFlag == 0x10) { // Note G - 392.00
-                noteFrequency = 392.00;
-            }
-            else { 
-                noteFrequency = 0;
+            if (!musicFlag) {
+                if (buttonFlag == 0x01) { // Note C - 261.63
+                    noteFrequency = 261.63;
+                }
+                else if (buttonFlag == 0x02) { // Note D - 293.66
+                    noteFrequency = 293.66;
+                }
+                else if (buttonFlag == 0x04) { // Note E - 329.63
+                    noteFrequency = 329.63;
+                }
+                else if (buttonFlag == 0x08) { // Note F - 349.23
+                    noteFrequency = 349.23;
+                }
+                else if (buttonFlag == 0x10) { // Note G - 392.00
+                    noteFrequency = 392.00;
+                }
+                else { 
+                    noteFrequency = 0;
+                }
             }
             break;
         default:
@@ -382,12 +384,11 @@ int MusicSMTick(int state) {
             else { 
                 noteFrequency = 0;
             }
+            set_PWM(noteFrequency);
             break;
         default:
-            noteFrequency = 0;
             break;
     }
-    set_PWM(noteFrequency);
     return state;
 }
 
@@ -450,8 +451,8 @@ int main(void) {
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
 
-    static task display, player, tone, score, level;
-    task *tasks[] = { &display, &player, &tone, &score, &level };
+    static task display, player, tone, score, level, music;
+    task *tasks[] = { &display, &player, &tone, &score, &level, &music };
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -481,10 +482,10 @@ int main(void) {
     level.elapsedTime = level.period;
     level.TickFct = &LevelSMTick;
 
-    // music.state = start;
-    // music.period = 100;
-    // music.elapsedTime = music.period;
-    // music.TickFct = &MusicSMTick;
+    music.state = start;
+    music.period = 100;
+    music.elapsedTime = music.period;
+    music.TickFct = &MusicSMTick;
 
     unsigned short i;
     unsigned long GCD = tasks[0]->period;
