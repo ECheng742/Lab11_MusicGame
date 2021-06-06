@@ -291,11 +291,6 @@ int ScoreSMTick(int state) {
                     deductionsFlag++; 
                 }
             }
-            if (pointCheckFlag) {
-                if (rowFlag) {
-                    scoreFlag++;
-                }
-            }
             state = SCORE_idle;
             break;
 
