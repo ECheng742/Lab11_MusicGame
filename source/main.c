@@ -330,7 +330,7 @@ int LevelSMTick(int state) {
             state = LEVEL_SMStart;
             break;
 
-        PORTA = levelFlag;
+        PORTA = lostFlag;
     }
     return state;    
 }
