@@ -91,7 +91,7 @@ int DisplaySMTick(int state) {
 			}
 			break;
         case DISPLAY_lost:
-            pattern = 0xFF:
+            pattern = 0xFF;
             row = (row << 1) | 0x01;
             break;
 		default:
