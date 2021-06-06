@@ -56,7 +56,7 @@ int DisplaySMTick(int state) {
                 state = DISPLAY_lost;
             }
             else { // !lostFlag
-                pattern = 0x80;
+                pattern = 0x01;
                 state = DISPLAY_shift;
             }
             break;
