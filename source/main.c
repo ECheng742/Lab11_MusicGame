@@ -358,6 +358,7 @@ int LevelSMTick(int state) {
             break;
 
     }
+    PORTA = resetButton;
     return state;    
 }
 
