@@ -410,7 +410,7 @@ int LevelSMTick(int state) {
             }
             else if (deductionsFlag >= 20) {
                 lostFlag = 0x01;
-                state = LEVEL_waitReset;
+                state = LEVEL_forfeit;
             }
             else { // deductions < 20
                 if (scoreFlag == 0x02) {
@@ -426,7 +426,7 @@ int LevelSMTick(int state) {
                 if (levelFlag == 0x01) {
                     wonFlag = 0x01;
                     musicFlag = 0x01;
-                    state = LEVEL_waitReset;
+                    state = LEVEL_forfeit;
                 }
                 else {
                     state = LEVEL_compare;
