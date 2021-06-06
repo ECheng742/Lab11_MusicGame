@@ -204,6 +204,7 @@ int PlayerSMTick(int state) {
             }
             // Player presses button during duration of last row
             if (pointCheckFlag = 0x01) {
+                pointCheckFlag = 0x06;
                 scoreFlag++;
                 pointCheckFlag = 0x02;
             }
