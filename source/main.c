@@ -178,28 +178,24 @@ int PlayerSMTick(int state) {
                 if (pointCheckFlag == 0x00) {
                     pointCheckFlag = 0x01;                
                 }
-                pointCheckFlag = 0x01;
                 buttonFlag = button;
             }
             else if (button == 0x04 && (rowFlag == 0x03)) { // Note E - 329.63
                 if (pointCheckFlag == 0x00) {
                     pointCheckFlag = 0x01;                
                 }
-                pointCheckFlag = 0x01;
                 buttonFlag = button;
             }
             else if (button == 0x08 && (rowFlag == 0x04)) { // Note F - 349.23
                 if (pointCheckFlag == 0x00) {
                     pointCheckFlag = 0x01;                
                 }
-                pointCheckFlag = 0x01;
                 buttonFlag = button;
             }
             else if (button == 0x10 && (rowFlag == 0x05)) { // Note G - 392.00
                 if (pointCheckFlag == 0x00) {
                     pointCheckFlag = 0x01;                
                 }
-                pointCheckFlag = 0x01;
                 buttonFlag = button;
             }
             else { // Multiple buttons/no buttons/doesn't match row
