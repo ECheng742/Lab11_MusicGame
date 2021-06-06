@@ -52,7 +52,13 @@ int DisplaySMTick(int state) {
             }
             break;
         case DISPLAY_lost:
-            state = DISPLAY_lost;
+            if (lostFlag) {
+                state = DISPLAY_lost;
+            }
+            else { // !lostFlag
+                pattern = 0x80;
+                state = DISPLAY_shift;
+            }
             break;
 		default:	
             state = DISPLAY_SMStart;
@@ -311,9 +317,10 @@ int ScoreSMTick(int state) {
     return state;
 }
 
-enum LEVEL_States { LEVEL_SMStart, LEVEL_compare, LEVEL_reset };
+enum LEVEL_States { LEVEL_SMStart, LEVEL_compare, LEVEL_waitReset };
 // unsigned points = 0x00; // FIXME?
 int LevelSMTick(int state) {
+    unsigned char resetButton = (~PINB >> 6) & 0x01;
 
     switch(state) {
         case LEVEL_SMStart:
@@ -334,11 +341,16 @@ int LevelSMTick(int state) {
             }
             break;
 
-        case LEVEL_reset:
+        case LEVEL_waitReset:
             scoreFlag = 0x00;
             deductionsFlag = 0x00;
-            // lostFlag = 0x01;
-            state = LEVEL_reset;
+            if (resetButton) {
+                state = LEVEL_compare;
+            }
+            else { // !resetButton
+                lostFlag = 0x00;
+                state = LEVEL_waitReset;
+            }
             break;
 
         default:
