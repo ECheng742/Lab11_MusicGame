@@ -392,7 +392,7 @@ int MusicSMTick(int state) {
     return state;
 }
 
-enum LEVEL_States { LEVEL_SMStart, LEVEL_compare, LEVEL_waitReset, LEVEL_forfeit };
+enum LEVEL_States { LEVEL_SMStart, LEVEL_compare, LEVEL_waitReset, LEVEL_forfeit, LEVEL_reset };
 
 int LevelSMTick(int state) {
     unsigned char resetButton = (~PINB >> 5) & 0x01;
@@ -443,21 +443,25 @@ int LevelSMTick(int state) {
             }
             break;
         case LEVEL_waitReset:
-            PORTA = 0x07;
+            PORTA = 0x05;
             scoreFlag = 0x00;
             deductionsFlag = 0x00;
             levelDisplay = 0x00;
             if (resetButton) {
-                lostFlag = 0x00;
-                wonFlag = 0x00;
-                musicFlag = 0x00;
-                levelFlag = 0x80;
-                levelDisplay = levelFlag;
-                state = LEVEL_compare;
-            }
-            else { // !resetButton
                 state = LEVEL_waitReset;
             }
+            else { // !resetButton
+                state = LEVEL_reset;
+            }
+            break;
+        case LEVEL_reset:
+            PORTA = 0x07;
+            lostFlag = 0x00;
+            wonFlag = 0x00;
+            musicFlag = 0x00;
+            levelFlag = 0x80;
+            levelDisplay = levelFlag;
+            state = LEVEL_compare;
             break;
         default:
             state = LEVEL_SMStart;
