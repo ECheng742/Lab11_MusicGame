@@ -450,8 +450,8 @@ int main(void) {
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
 
-    static task display, player, tone, score, level, music;
-    task *tasks[] = { &display, &player, &tone, &score, &level, &music };
+    static task display, player, tone, score, level;
+    task *tasks[] = { &display, &player, &tone, &score, &level };
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -481,10 +481,10 @@ int main(void) {
     level.elapsedTime = level.period;
     level.TickFct = &LevelSMTick;
 
-    music.state = start;
-    music.period = 100;
-    music.elapsedTime = music.period;
-    music.TickFct = &MusicSMTick;
+    // music.state = start;
+    // music.period = 100;
+    // music.elapsedTime = music.period;
+    // music.TickFct = &MusicSMTick;
 
     unsigned short i;
     unsigned long GCD = tasks[0]->period;
