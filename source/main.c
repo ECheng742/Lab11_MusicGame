@@ -403,7 +403,6 @@ int LevelSMTick(int state) {
             state = LEVEL_compare;
             break;
         case LEVEL_compare:
-            PORTA = 0x01;
             if (resetButton) {// Most precedence
                 lostFlag = 0x01;
                 state = LEVEL_waitForfeit;
@@ -434,7 +433,6 @@ int LevelSMTick(int state) {
             }
             break;
         case LEVEL_waitForfeit:
-            PORTA = 0x02;
             if (resetButton) {
                 state = LEVEL_waitForfeit;
             }
@@ -443,7 +441,6 @@ int LevelSMTick(int state) {
             }
             break;
         case LEVEL_forfeit:
-            PORTA = 0x03;
             if (resetButton) {
                 state = LEVEL_waitReset;
             }
@@ -452,7 +449,6 @@ int LevelSMTick(int state) {
             }
             break;
         case LEVEL_waitReset:
-            PORTA = 0x05;
             scoreFlag = 0x00;
             deductionsFlag = 0x00;
             levelDisplay = 0x00;
@@ -464,7 +460,6 @@ int LevelSMTick(int state) {
             }
             break;
         case LEVEL_reset:
-            PORTA = 0x07;
             lostFlag = 0x00;
             wonFlag = 0x00;
             musicFlag = 0x00;
@@ -476,7 +471,7 @@ int LevelSMTick(int state) {
             state = LEVEL_SMStart;
             break;
     }
-    // PORTA = levelDisplay; //fix
+    PORTA = levelDisplay; 
     return state;    
 }
 
