@@ -320,7 +320,7 @@ int ScoreSMTick(int state) {
 enum LEVEL_States { LEVEL_SMStart, LEVEL_compare, LEVEL_waitReset };
 // unsigned points = 0x00; // FIXME?
 int LevelSMTick(int state) {
-    unsigned char resetButton = (~PINB >> 6) & 0x01;
+    unsigned char resetButton = (~PINB >> 5) & 0x01;
 
     switch(state) {
         case LEVEL_SMStart:
@@ -365,7 +365,7 @@ int LevelSMTick(int state) {
 int main(void) {
     /* Insert DDR and PORT initializations */
     DDRA = 0xFF; PORTA = 0x00;
-    DDRB = 0xA0; PORTB = 0x5F;
+    DDRB = 0xC0; PORTB = 0x3F;
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
