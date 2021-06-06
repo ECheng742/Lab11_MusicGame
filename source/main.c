@@ -122,8 +122,6 @@ enum Player_States { Player_SMStart, Player_wait, Player_note, Player_waitReleas
 
 int PlayerSMTick(int state) {
     unsigned char button = ~PINB & 0x1F;
-    static char hold = 0x00; // Allows player extra period of time to let go w/o loss of points
-    unsigned char press = 0x00;
 
     switch(state) {
         case Player_SMStart:
@@ -131,7 +129,6 @@ int PlayerSMTick(int state) {
             break;
         case Player_wait:
             if (rowFlag) {
-                // press = 0x00;
                 state = Player_note;
             }
             else if (!rowFlag && button) {
@@ -146,23 +143,9 @@ int PlayerSMTick(int state) {
                 state = Player_note;
             }
             else if (!rowFlag && !button) {
-                if (!press) {
-                    // deductionsFlag++;
-                }
-                else { // press
-                    // pointsFlag++;
-                    press = 0x00;
-                }
                 state = Player_wait;
             }
             else if (!rowFlag && button) {
-                if (!press) {
-                    // deductionsFlag++;
-                }
-                else { // press
-                    // pointsFlag++;
-                    press = 0x00;
-                }
                 state = Player_waitRelease;
             }
             break;
@@ -203,20 +186,18 @@ int PlayerSMTick(int state) {
                 press = 0x01;
                 buttonFlag = button;
             }
-            // if multiple buttons/no buttons/doesn't match row, press = 0x00 on exit of Player_note
             else { // Multiple buttons/no buttons/doesn't match row
-                buttonFlag = 0x00;
                 penaltyCheckFlag = 0x01;
                 pointCheckFlag = 0x00;
-                // press = 0x00;
+                buttonFlag = 0x00;
             }
             break;
 
-        case Player_waitRelease:
-            penaltyCheckFlag = 0x01;
-            pointCheckFlag = 0x00;
-            buttonFlag = 0x00;
-            break;
+        // case Player_waitRelease:
+        //     penaltyCheckFlag = 0x01;
+        //     pointCheckFlag = 0x00;
+        //     buttonFlag = 0x00;
+        //     break;
 
         default:
             penaltyCheckFlag = 0x01;
@@ -286,7 +267,7 @@ int PenaltySMTick(int state) {
         case PENALTY_idle:
             if (penaltyCheckFlag) {
                 if (rowFlag) {
-                    deductionsFlag++; // FIXME uncomment when done testing
+                    deductionsFlag++; 
                 }
             }
             if (pointCheckFlag) {
