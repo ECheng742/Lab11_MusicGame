@@ -66,7 +66,7 @@ int DisplaySMTick(int state) {
             }
             break;
         case DISPLAY_won:
-            if (wonFlag && !lostFlag) {
+            if (wonFlag) {
                 state = DISPLAY_won;
             }
             else {
