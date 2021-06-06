@@ -204,7 +204,6 @@ int PlayerSMTick(int state) {
             }
             else { // Multiple buttons/no buttons/doesn't match row
                 penaltyCheckFlag = 0x01;
-                pointCheckFlag = 0x00;
                 buttonFlag = 0x00;
             }
             // Player presses button during duration of last row
@@ -298,7 +297,6 @@ int ScoreSMTick(int state) {
             state = SCORE_SMStart;
             break;
     }
-    PORTA = scoreFlag; // fix
     return state;
 }
 
