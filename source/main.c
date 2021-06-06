@@ -23,7 +23,7 @@ unsigned char buttonFlag = 0x00;
 unsigned char scoreFlag = 0x00;
 unsigned char deductionsFlag = 0x00;
 unsigned char penaltyCheckFlag = 0x00;
-unsigned char lostFlag = 0x00;
+unsigned char lostFlag = 0x01;
 unsigned char levelFlag = 0x80;
 unsigned char wonFlag = 0x00;
 unsigned char musicFlag = 0x00;
@@ -400,7 +400,7 @@ int LevelSMTick(int state) {
 
     switch(state) {
         case LEVEL_SMStart:
-            state = LEVEL_compare;
+            state = LEVEL_forfeit;
             break;
         case LEVEL_compare:
             if (resetButton) {// Most precedence
