@@ -407,12 +407,12 @@ int LevelSMTick(int state) {
                 lostFlag = 0x01;
                 state = LEVEL_waitForfeit;
             }
-            else if (deductionsFlag >= 20) {
+            else if (deductionsFlag >= 15) {
                 lostFlag = 0x01;
                 state = LEVEL_forfeit;
             }
-            else { // deductions < 20
-                if (scoreFlag == 0x02) {
+            else { // deductions < 15
+                if (scoreFlag == 0x03) {
                     scoreFlag = 0x00;
                     if (levelFlag >= 0x02) {
                         levelFlag = levelFlag >> 1;
