@@ -31,7 +31,7 @@ unsigned char musicFlag = 0x00;
 enum DISPLAY_States { DISPLAY_SMStart, DISPLAY_shift, DISPLAY_lost, DISPLAY_won };
 int DisplaySMTick(int state) {
 	// Local Variables
-	static unsigned char pattern = 0x80;	// LED pattern - 0: LED off; 1: LED on
+	static unsigned char pattern = 0x00;	// LED pattern - 0: LED off; 1: LED on
 	static unsigned char row = 0xFE;  	// (s) displaying pattern. 
 							            // 0: display pattern on row
 							            // 1: do NOT display pattern on row
