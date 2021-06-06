@@ -25,9 +25,10 @@ unsigned char deductionsFlag = 0x00;
 unsigned char penaltyCheckFlag = 0x00;
 unsigned char lostFlag = 0x00;
 unsigned char levelFlag = 0x80;
+unsigned char wonFlag = 0x00;
 
 // LED Matrix SM: Displays running lights
-enum DISPLAY_States { DISPLAY_SMStart, DISPLAY_shift, DISPLAY_lost };
+enum DISPLAY_States { DISPLAY_SMStart, DISPLAY_shift, DISPLAY_lost, DISPLAY_won };
 int DisplaySMTick(int state) {
 	// Local Variables
 	static unsigned char pattern = 0x80;	// LED pattern - 0: LED off; 1: LED on
@@ -43,12 +44,16 @@ int DisplaySMTick(int state) {
             state = DISPLAY_shift;
             break;
 		case DISPLAY_shift:	
-            if (!lostFlag) {
+            if (!lostFlag && !wonFlag) {
                 state = DISPLAY_shift;
             }
-            else { // lostFlag
+            else if (lostFlag) { // lostFlag
                 row = 0xFE;
                 state = DISPLAY_lost;
+            }
+            else if (wonFlag && !lostFlag) {
+                row = 0xE0;
+                state = DISPLAY_won;
             }
             break;
         case DISPLAY_lost:
@@ -57,6 +62,14 @@ int DisplaySMTick(int state) {
             }
             else { // !lostFlag
                 pattern = 0x01;
+                state = DISPLAY_shift;
+            }
+            break;
+        case DISPLAY_won:
+            if (wonFlag && !lostFlag) {
+                state = DISPLAY_won;
+            }
+            else {
                 state = DISPLAY_shift;
             }
             break;
@@ -98,6 +111,10 @@ int DisplaySMTick(int state) {
 			break;
         case DISPLAY_lost:
             pattern = 0x00;
+            rowFlag = 0x00;
+            break;
+        case DISPLAY_won:
+            pattern = 0xFF;
             rowFlag = 0x00;
             break;
 		default:
@@ -326,7 +343,6 @@ int LevelSMTick(int state) {
         case LEVEL_SMStart:
             state = LEVEL_compare;
             break;
-
         case LEVEL_compare:
             if (deductionsFlag >= 10) {
                 lostFlag = 0x01;
@@ -335,19 +351,23 @@ int LevelSMTick(int state) {
             else { // deductions < 10
                 if (scoreFlag == 0x03) {
                     scoreFlag = 0x00;
-                    if (levelFlag > 0x02) {
+                    if (levelFlag >= 0x02) {
                         levelFlag = levelFlag >> 1;
                     }                    
+                }
+                if (levelFlag == 0x01) {
+                    wonFlag = 0x01;
+                    state = LEVEL_waitReset;
                 }
                 state = LEVEL_compare;
             }
             break;
-
         case LEVEL_waitReset:
             scoreFlag = 0x00;
             deductionsFlag = 0x00;
             if (resetButton) {
                 lostFlag = 0x00;
+                wonFlag = 0x00;
                 levelFlag = 0x80;
                 state = LEVEL_compare;
             }
@@ -355,11 +375,9 @@ int LevelSMTick(int state) {
                 state = LEVEL_waitReset;
             }
             break;
-
         default:
             state = LEVEL_SMStart;
             break;
-
     }
     PORTA = levelFlag;
     return state;    
