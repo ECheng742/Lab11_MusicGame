@@ -24,7 +24,7 @@ unsigned char scoreFlag = 0x00;
 unsigned char deductionsFlag = 0x00;
 unsigned char penaltyCheckFlag = 0x00;
 unsigned char lostFlag = 0x01;
-unsigned char levelFlag = 0x80;
+unsigned char levelFlag = 0x00;
 unsigned char wonFlag = 0x00;
 unsigned char musicFlag = 0x00;
 
@@ -433,6 +433,7 @@ int LevelSMTick(int state) {
             }
             break;
         case LEVEL_waitForfeit:
+            levelDisplay = 0x00;
             if (resetButton) {
                 state = LEVEL_waitForfeit;
             }
