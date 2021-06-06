@@ -14,7 +14,6 @@
 #include "simAVRHeader.h"
 #include "../header/bit.h"
 #include "../header/timer.h"
-#include "../header/keypad.h"
 #include "../header/scheduler.h"
 #endif
 
@@ -42,7 +41,7 @@ int DisplaySMTick(int state) {
 	// Transitions
 	switch (state) {
         case DISPLAY_SMStart:
-            state = DISPLAY_shift;
+            state = DISPLAY_lost;
             break;
 		case DISPLAY_shift:	
             if (!lostFlag && !wonFlag) {
