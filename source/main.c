@@ -25,7 +25,6 @@ unsigned char levelFlag = 0x00;
 unsigned char scoreFlag = 0x00;
 unsigned char deductionsFlag = 0x00;
 unsigned char penaltyCheckFlag = 0x00;
-unsigned char pointCheckFlag = 0x00;
 
 // LED Matrix SM: Displays running lights
 enum DISPLAY_States {DISPLAY_SMStart, DISPLAY_shift};
@@ -122,6 +121,7 @@ enum Player_States { Player_SMStart, Player_wait, Player_note, Player_waitReleas
 
 int PlayerSMTick(int state) {
     unsigned char button = ~PINB & 0x1F;
+    static unsigned char pointCheckFlag = 0x00;
 
     switch(state) {
         case Player_SMStart:
@@ -129,6 +129,7 @@ int PlayerSMTick(int state) {
             break;
         case Player_wait:
             if (rowFlag) {
+                pointCheckFlag = 0x00;
                 state = Player_note;
             }
             else if (!rowFlag && button) {
@@ -143,9 +144,11 @@ int PlayerSMTick(int state) {
                 state = Player_note;
             }
             else if (!rowFlag && !button) {
+                pointCheckFlag = 0x00;
                 state = Player_wait;
             }
             else if (!rowFlag && button) {
+                pointCheckFlag = 0x00;
                 state = Player_waitRelease;
             }
             break;
@@ -165,26 +168,49 @@ int PlayerSMTick(int state) {
     switch(state) {    
         case Player_note:
             penaltyCheckFlag = 0x00;
-            pointCheckFlag = 0x01;
             if (button == 0x01 && (rowFlag == 0x01)) { // Note C - 261.63
+                if (pointCheckFlag == 0x00) {
+                    pointCheckFlag = 0x01;                
+                }
                 buttonFlag = button;
             }
             else if (button == 0x02 && (rowFlag == 0x02)) { // Note D - 293.66
+                if (pointCheckFlag == 0x00) {
+                    pointCheckFlag = 0x01;                
+                }
+                pointCheckFlag = 0x01;
                 buttonFlag = button;
             }
             else if (button == 0x04 && (rowFlag == 0x03)) { // Note E - 329.63
+                if (pointCheckFlag == 0x00) {
+                    pointCheckFlag = 0x01;                
+                }
+                pointCheckFlag = 0x01;
                 buttonFlag = button;
             }
             else if (button == 0x08 && (rowFlag == 0x04)) { // Note F - 349.23
+                if (pointCheckFlag == 0x00) {
+                    pointCheckFlag = 0x01;                
+                }
+                pointCheckFlag = 0x01;
                 buttonFlag = button;
             }
             else if (button == 0x10 && (rowFlag == 0x05)) { // Note G - 392.00
+                if (pointCheckFlag == 0x00) {
+                    pointCheckFlag = 0x01;                
+                }
+                pointCheckFlag = 0x01;
                 buttonFlag = button;
             }
             else { // Multiple buttons/no buttons/doesn't match row
                 penaltyCheckFlag = 0x01;
                 pointCheckFlag = 0x00;
                 buttonFlag = 0x00;
+            }
+            // Player presses button during duration of last row
+            if (pointCheckFlag = 0x01) {
+                scoreFlag++;
+                pointCheckFlag = 0x02;
             }
             break;
 
@@ -251,15 +277,15 @@ int ToneSMTick(int state) {
     return state;
 }
 
-enum PENALTY_States { PENALTY_SMStart, PENALTY_idle };
+enum SCORE_States { SCORE_SMStart, SCORE_idle };
 
-int PenaltySMTick(int state) {
+int ScoreSMTick(int state) {
     switch(state) {
-        case PENALTY_SMStart:
-            state = PENALTY_idle;
+        case SCORE_SMStart:
+            state = SCORE_idle;
             break;
         
-        case PENALTY_idle:
+        case SCORE_idle:
             if (penaltyCheckFlag) {
                 if (rowFlag) {
                     deductionsFlag++; 
@@ -270,11 +296,11 @@ int PenaltySMTick(int state) {
                     scoreFlag++;
                 }
             }
-            state = PENALTY_idle;
+            state = SCORE_idle;
             break;
 
         default:
-            state = PENALTY_SMStart;
+            state = SCORE_SMStart;
             break;
     }
     PORTA = scoreFlag; // fix
@@ -337,10 +363,8 @@ int main(void) {
     DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
 
-    // static task display, player, tone, penalty, level;
-    // task *tasks[] = { &display, &player, &tone, &penalty, &level };
-    static task display, player, tone, penalty;
-    task *tasks[] = { &display, &player, &tone, &penalty };
+    static task display, player, tone, score, level;
+    task *tasks[] = { &display, &player, &tone, &score, &level };
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -360,15 +384,15 @@ int main(void) {
     tone.elapsedTime = tone.period;
     tone.TickFct = &ToneSMTick;
 
-    penalty.state = start;
-    penalty.period = 300;
-    penalty.elapsedTime = penalty.period;
-    penalty.TickFct = &PenaltySMTick;
+    score.state = start;
+    score.period = 300;
+    score.elapsedTime = score.period;
+    score.TickFct = &ScoreSMTick;
 
-    // level.state = start;
-    // level.period = 100;
-    // level.elapsedTime = level.period;
-    // level.TickFct = &LevelSMTick;
+    level.state = start;
+    level.period = 100;
+    level.elapsedTime = level.period;
+    level.TickFct = &LevelSMTick;
 
     unsigned short i;
     unsigned long GCD = tasks[0]->period;
