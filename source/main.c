@@ -333,7 +333,7 @@ int LevelSMTick(int state) {
             break;
 
     }
-    PORTA = deductionsFlag;
+    PORTA = lostFlag;
     return state;    
 }
 
