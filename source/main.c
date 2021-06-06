@@ -396,7 +396,7 @@ enum LEVEL_States { LEVEL_SMStart, LEVEL_compare, LEVEL_waitReset };
 
 int LevelSMTick(int state) {
     unsigned char resetButton = (~PINB >> 5) & 0x01;
-    unsigned char levelDisplay = 0x00;
+    static unsigned char levelDisplay = 0x00;
 
     switch(state) {
         case LEVEL_SMStart:
