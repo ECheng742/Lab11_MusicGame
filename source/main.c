@@ -396,7 +396,7 @@ enum LEVEL_States { LEVEL_SMStart, LEVEL_compare, LEVEL_waitReset };
 
 int LevelSMTick(int state) {
     unsigned char resetButton = (~PINB >> 5) & 0x01;
-    static unsigned char levelDisplay = 0x00;
+    static unsigned char levelDisplay = 0x80;
 
     switch(state) {
         case LEVEL_SMStart:
@@ -412,7 +412,9 @@ int LevelSMTick(int state) {
                     scoreFlag = 0x00;
                     if (levelFlag >= 0x02) {
                         levelFlag = levelFlag >> 1;
-                        levelDisplay = levelDisplay | levelFlag;
+                        if (levelFlag != 0x01) {
+                            levelDisplay = levelDisplay | levelFlag;
+                        }
                     }                    
                 }
                 if (levelFlag == 0x01) {
@@ -432,6 +434,7 @@ int LevelSMTick(int state) {
                 wonFlag = 0x00;
                 musicFlag = 0x00;
                 levelFlag = 0x80;
+                levelDisplay = levelFlag;
                 state = LEVEL_compare;
             }
             else { // !resetButton
